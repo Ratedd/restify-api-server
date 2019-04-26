@@ -1,0 +1,26 @@
+{
+  "name": "restify-api-server",
+  "version": "1.0.0",
+  "description": "An experimental API server made with restify",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ratedd/restify-api-server.git"
+  },
+  "author": "Royston",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Ratedd/restify-api-server/issues"
+  },
+  "homepage": "https://github.com/Ratedd/restify-api-server#readme",
+  "dependencies": {
+    "dotenv": "^7.0.0",
+    "dynamoose": "^1.7.2",
+    "restify": "^8.3.1",
+    "winston": "^3.2.1",
+    "winston-daily-rotate-file": "^3.8.0"
+  }
+}
