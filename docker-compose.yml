@@ -1,0 +1,10 @@
+version: '2.1'
+services:
+  fyp-api-server:
+    build:
+      context: .
+    restart: always
+    env_file:
+      - ./.env
+    ports:
+      - 3000:3000

@@ -1,7 +1,7 @@
 const dynamoose = require('dynamoose');
 const Schema = dynamoose.Schema; // eslint-disable-line prefer-destructuring
-let testSchema = {};
-let TestModel;
+let faqSchema = {};
+let FaqModel;
 
 const database = {
 	initialize: () => {
@@ -9,20 +9,27 @@ const database = {
 			region: process.env.REGION
 		});
 
-		testSchema = new Schema({
-			description: {
+		faqSchema = new Schema({
+			moduleCode: {
 				type: String,
+				required: true,
+				rangeKey: true,
+				index: true
+			},
+			questions: {
+				type: Array,
 				required: true
 			}
 		});
-		TestModel = dynamoose.model('test', testSchema);
+		FaqModel = dynamoose.model('test', faqSchema);
 	},
-	test: desc => {
-		const testDetail = new TestModel({
-			description: desc
+	addFaq: data => {
+		const faqDetail = new FaqModel({
+			moduleCode: data.moduleCode,
+			questions: data.questions
 		});
 
-		return testDetail.save();
+		return faqDetail.save();
 	}
 };
 
