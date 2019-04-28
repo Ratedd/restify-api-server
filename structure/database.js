@@ -21,7 +21,7 @@ const database = {
 				required: true
 			}
 		});
-		FaqModel = dynamoose.model('test', faqSchema);
+		FaqModel = dynamoose.model('faqs', faqSchema);
 	},
 	addFaq: data => {
 		const faqDetail = new FaqModel({
