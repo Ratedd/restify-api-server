@@ -4,7 +4,7 @@ const bridge = require('./structure/bridge.js');
 const testManagement = require('./structure/testManagement.js');
 
 const server = restify.createServer({
-	name: 'prometheus',
+	name: 'prometheus-api',
 	version: '0.1.0'
 });
 
