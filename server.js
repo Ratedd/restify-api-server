@@ -20,6 +20,8 @@ server.post('/api/add', (req, res, next) => {
 		res.send(403, { error: 'Unauthorized' });
 		return next();
 	}
+	const { authorization } = req;
+	console.log(authorization);
 	const data = req.body;
 	accountManagement.addAccount(data).then(account => {
 		res.send(200, account);
