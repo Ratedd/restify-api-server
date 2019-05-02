@@ -5,7 +5,7 @@ let accountSchema = {};
 let FaqModel;
 let AccountModel;
 
-const database = {
+const databaseManager = {
 	initialize: () => {
 		dynamoose.AWS.config.update({
 			region: process.env.REGION
@@ -64,4 +64,4 @@ const database = {
 	getAccountByUsername: inputUsername => AccountModel.scan({ username: inputUsername }).exec()
 };
 
-module.exports = database;
+module.exports = databaseManager;
