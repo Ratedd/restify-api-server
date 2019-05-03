@@ -17,7 +17,7 @@ server.logger = require('./structure/logger.js');
 
 server.post('/api/add', (req, res, next) => {
 	if (!Object.keys(req.authorization).length) {
-		res.send(403, { error: 'Unauthorized' });
+		res.send(403, { error: 'Authentication Failed' });
 		return next();
 	}
 	const { authorization } = req;
