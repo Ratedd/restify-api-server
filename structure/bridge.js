@@ -1,4 +1,4 @@
-const db = require('./database.js');
+const db = require('./databaseManager.js');
 
 const bridge = {
 	initializeDB: () => db.initialize(),
