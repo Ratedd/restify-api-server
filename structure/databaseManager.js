@@ -61,7 +61,8 @@ const databaseManager = {
 		return accountDetail.save();
 	},
 	getTotalIndex: () => AccountModel.scan().exec(),
-	getAccountByUsername: inputUsername => AccountModel.scan({ username: inputUsername }).exec()
+	getAccountByUsername: inputUsername => AccountModel.scan({ username: inputUsername }).exec(),
+	getFaqByModuleCode: inputModuleCode => FaqModel.scan({ moduleCode: inputModuleCode }).exec()
 };
 
 module.exports = databaseManager;
