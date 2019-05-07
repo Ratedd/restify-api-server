@@ -36,7 +36,11 @@ const databaseManager = {
 				index: true
 			},
 			questions: {
-				type: Array,
+				type: Array[String],
+				required: true
+			},
+			keyWords: {
+				type: Array[String],
 				required: true
 			}
 		});
