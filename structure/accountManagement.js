@@ -2,7 +2,7 @@ const bcrypt = require('bcrypt');
 const saltRounds = 12;
 const bridge = require('./bridge.js');
 const db = bridge.getDB();
-const logger = require('./logger.js');
+const logger = require('../util/logger.js');
 
 const accountManagement = {
 	addAccount: data => new Promise(async (resolve, reject) => {
