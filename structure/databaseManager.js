@@ -4,6 +4,8 @@ let faqSchema = {};
 let accountSchema = {};
 let FaqModel;
 let AccountModel;
+let keywordSchema = {};
+let KeywordModel;
 
 const databaseManager = {
 	initialize: () => {
@@ -39,18 +41,21 @@ const databaseManager = {
 				type: Array[String],
 				required: true
 			},
-			keyWords: {
-				type: Array[String],
-				required: true
-			}
+			keywords: Array[String]
+		});
+
+		keywordSchema = new Schema({
+			keywords: Array[String]
 		});
 		FaqModel = dynamoose.model('faqs', faqSchema);
 		AccountModel = dynamoose.model('accounts', accountSchema);
+		KeywordModel = dynamoose.model('keywords', keywordSchema);
 	},
 	addFaq: data => {
 		const faqDetail = new FaqModel({
 			moduleCode: data.moduleCode,
-			questions: data.questions
+			questions: data.questions,
+			keywords: data.keywords ? data.keywords : []
 		});
 
 		return faqDetail.save();
@@ -66,7 +71,12 @@ const databaseManager = {
 	},
 	getTotalIndex: () => AccountModel.scan().exec(),
 	getAccountByUsername: inputUsername => AccountModel.scan({ username: inputUsername }).exec(),
-	getFaqByModuleCode: inputModuleCode => FaqModel.scan({ moduleCode: inputModuleCode }).exec()
+	getFaqByModuleCode: inputModuleCode => FaqModel.scan({ moduleCode: inputModuleCode }).exec(),
+	getKeywords: () => KeywordModel.scan().exec(),
+	getFaqByKeyword: keyword => {
+		const keywordArray = [keyword];
+		return FaqModel.scan({ keywords: keywordArray }).exec();
+	}
 };
 
 module.exports = databaseManager;

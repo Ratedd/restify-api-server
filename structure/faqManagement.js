@@ -7,7 +7,7 @@ const faqManagement = {
 		db.addFaq(data).then(addedFaq => {
 			resolve(addedFaq);
 		}).catch(err => {
-			console.log(err);
+			logger.error(err);
 			reject(err);
 		});
 	})
