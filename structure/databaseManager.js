@@ -38,14 +38,18 @@ const databaseManager = {
 				index: true
 			},
 			questions: {
-				type: Array[String],
+				type: [String],
 				required: true
 			},
-			keywords: Array[String]
+			keywords: {
+				type: [String]
+			}
 		});
 
 		keywordSchema = new Schema({
-			keywords: Array[String]
+			keywords: {
+				type: [String]
+			}
 		});
 		FaqModel = dynamoose.model('faqs', faqSchema);
 		AccountModel = dynamoose.model('accounts', accountSchema);
@@ -72,6 +76,13 @@ const databaseManager = {
 	getTotalIndex: () => AccountModel.scan().exec(),
 	getAccountByUsername: inputUsername => AccountModel.scan({ username: inputUsername }).exec(),
 	getFaqByModuleCode: inputModuleCode => FaqModel.scan({ moduleCode: inputModuleCode }).exec(),
+	addKeyword: keyword => {
+		const keywordDetail = new KeywordModel({
+			keywords: keyword
+		});
+
+		return keywordDetail.save();
+	},
 	getKeywords: () => KeywordModel.scan().exec(),
 	getFaqByKeyword: keyword => {
 		const keywordArray = [keyword];

@@ -2,6 +2,8 @@ require('dotenv').config();
 const restify = require('restify');
 const bridge = require('./structure/bridge.js');
 const accountManagement = require('./structure/accountManagement.js');
+const faqManagement = require('./structure/faqManagement.js');
+const keywordManagement = require('./structure/keywordManagement.js');
 
 const server = restify.createServer({
 	name: 'prometheus-api',
@@ -13,7 +15,7 @@ server.use(restify.plugins.queryParser({ mapParams: true }));
 server.use(restify.plugins.authorizationParser());
 server.use(restify.plugins.bodyParser());
 
-server.logger = require('./structure/logger.js');
+server.logger = require('./util/logger.js');
 
 server.post('/api/add', (req, res, next) => {
 	if (!Object.keys(req.authorization).length) {
@@ -29,6 +31,16 @@ server.post('/api/add', (req, res, next) => {
 	}).catch(err => {
 		res.send(500, { err, error: 'Internal Server Error' });
 		return next();
+	});
+});
+
+server.get('/api/keyword/:keyword', (req, res, next) => {
+	server.logger.info('req.params', req.params);
+});
+
+server.post('/api/keyword/:keyword', (req, res, next) => {
+	keywordManagement.addKeyword(req.params.keyword).then(data => {
+		server.logger.info('data', data);
 	});
 });
 
