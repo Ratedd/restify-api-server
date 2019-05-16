@@ -8,7 +8,7 @@ const keywordManagement = {
 			logger.debug('[keywordManagement - getKeywords()]', data);
 			resolve(data);
 		}).catch(err => {
-			logger.err('[keywordManagement - getKeywords()]', err);
+			logger.error('[keywordManagement - getKeywords()]', err);
 			reject(err);
 		});
 	}),

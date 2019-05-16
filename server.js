@@ -34,14 +34,14 @@ server.post('/api/add', (req, res, next) => {
 	});
 });
 
-server.get('/api/keyword/:keyword', (req, res, next) => {
-	server.logger.info('req.params', req.params);
-});
-
-server.post('/api/keyword/:keyword', (req, res, next) => {
-	keywordManagement.addKeyword(req.params.keyword).then(data => {
+server.get('/api/getkeywords', (req, res, next) => {
+	keywordManagement.getKeywords().then(data => {
 		server.logger.info('data', data);
 	});
+});
+
+server.post('/api/addkeywords', (req, res, next) => {
+	server.logger.info('req.body', req.body);
 });
 
 server.listen(3000, () => {
