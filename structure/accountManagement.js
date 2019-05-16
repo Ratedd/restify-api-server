@@ -33,6 +33,13 @@ const accountManagement = {
 			logger.error(`[AccountManagement] ${err}`);
 			reject(err);
 		});
+	}),
+	getAccountByUsername: inputUsername => new Promise((resolve, reject) => {
+		db.getAccountByUsername(inputUsername).then(data => {
+			resolve(data);
+		}).catch(err => {
+			reject(err);
+		});
 	})
 };
 

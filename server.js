@@ -14,23 +14,40 @@ server.use(restify.plugins.acceptParser(server.acceptable));
 server.use(restify.plugins.queryParser({ mapParams: true }));
 server.use(restify.plugins.authorizationParser());
 server.use(restify.plugins.bodyParser());
+server.use(restify.plugins.jsonBodyParser());
+server.pre(restify.plugins.pre.sanitizePath());
 
 server.logger = require('./util/logger.js');
 
-server.post('/api/add', (req, res, next) => {
-	if (!Object.keys(req.authorization).length) {
-		res.send(403, { error: 'Authentication Failed' });
-		return next();
-	}
-	const { authorization } = req;
-	console.log(authorization);
-	const data = req.body;
-	accountManagement.addAccount(data).then(account => {
+server.post('/api/addaccount', (req, res, next) => {
+	// if (!Object.keys(req.authorization).length) {
+	// 	res.send(403, { error: 'Authentication Failed' });
+	// 	return next();
+	// }
+	// const { authorization } = req;
+	// console.log(authorization);
+	// const data = req.body;
+	// accountManagement.addAccount(data).then(account => {
+	// 	res.send(200, account);
+	// 	return next();
+	// }).catch(err => {
+	// 	res.send(500, { err, error: 'Internal Server Error' });
+	// 	return next();
+	// });
+	accountManagement.addAccount({ username: 'admin', password: '123' }).then(account => {
 		res.send(200, account);
 		return next();
 	}).catch(err => {
-		res.send(500, { err, error: 'Internal Server Error' });
+		res.send(500);
 		return next();
+	});
+});
+
+server.get('/api/getaccount', (req, res, next) => {
+	accountManagement.getAccountByUsername(req.body.username).then(data => {
+		server.logger.info('data', data);
+	}).catch(err => {
+		server.logger.error(err);
 	});
 });
 
