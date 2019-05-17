@@ -1,9 +1,11 @@
 require('dotenv').config();
 const restify = require('restify');
 const bridge = require('./structure/bridge.js');
+const bcrypt = require('bcrypt');
 const accountManagement = require('./structure/accountManagement.js');
 const faqManagement = require('./structure/faqManagement.js');
 const keywordManagement = require('./structure/keywordManagement.js');
+const errors = require('./util/error.js');
 
 const server = restify.createServer({
 	name: 'prometheus-api',
@@ -26,34 +28,69 @@ server.post('/api/addaccount', (req, res, next) => {
 	// }
 	// const { authorization } = req;
 	// console.log(authorization);
-	// const data = req.body;
-	// accountManagement.addAccount(data).then(account => {
-	// 	res.send(200, account);
-	// 	return next();
-	// }).catch(err => {
-	// 	res.send(500, { err, error: 'Internal Server Error' });
-	// 	return next();
-	// });
-	accountManagement.addAccount({ username: 'admin', password: '123' }).then(account => {
-		res.send(200, account);
+	const data = req.body || req.params;
+	server.logger.info('data', data);
+	if (!data) {
+		res.send(200);
 		return next();
+	}
+	accountManagement.getAccountByUsername(data.username).then(account => {
+		if (account.count > 0) {
+			res.send(200, { message: 'Account already exists' });
+			return next();
+		}
+		accountManagement.addAccount(data).then(created => {
+			const creation = {
+				username: created.username,
+				message: 'Account created'
+			};
+			res.send(200, creation);
+			return next();
+		}).catch(err => {
+			server.logger.error('[server - /api/addaccount: 1 ]\n', err);
+			res.send(500, { message: 'Internal Server Error' });
+			return next();
+		});
 	}).catch(err => {
-		res.send(500);
+		server.logger.error('[server - /api/addaccount: 2]\n', err);
+		res.send(500, { message: 'Internal Server Error' });
 		return next();
 	});
 });
 
-server.get('/api/getaccount', (req, res, next) => {
-	accountManagement.getAccountByUsername(req.body.username).then(data => {
-		server.logger.info('data', data);
+server.get('/api/verifyaccount', (req, res, next) => {
+	const accountDetails = req.body;
+	accountManagement.getAccountByUsername(accountDetails.username).then(data => {
+		if (data.count < 1) {
+			res.send(200, { message: 'Account does not exists' });
+			return next();
+		}
+		bcrypt.compare(accountDetails.password, data[0].password).then(match => {
+			if (match) {
+				res.send(200, { message: 'Account authenticated' });
+				return next();
+			}
+			res.send(200, { message: 'Invalid Password' });
+			return next();
+		}).catch(err => {
+			server.logger.error('[server - /api/verifyaccount: 2]\n', err);
+			return next(errors.internalServerError());
+		});
 	}).catch(err => {
-		server.logger.error(err);
+		server.logger.info('[server - /api/verifyaccount: 1]\n', err);
+		return next(errors.internalServerError());
 	});
 });
 
 server.get('/api/getkeywords', (req, res, next) => {
 	keywordManagement.getKeywords().then(data => {
 		server.logger.info('data', data);
+		res.send(200, data);
+		return next();
+	}).catch(err => {
+		server.logger.error('[server - /api/getkeywords]', err);
+		res.send(500, err);
+		return next();
 	});
 });
 
@@ -66,4 +103,4 @@ server.listen(3000, () => {
 	server.logger.info(`${server.name} listening at ${server.url}`);
 });
 
-process.on('unhandledRejection', err => server.logger.error(err));
+process.on('unhandledRejection', err => server.logger.error('unhandledPromiseRejection\n', err));

@@ -65,11 +65,7 @@ const databaseManager = {
 		return faqDetail.save();
 	},
 	addAccount: data => {
-		const accountDetail = new AccountModel({
-			id: data.id,
-			username: data.username,
-			password: data.password
-		});
+		const accountDetail = new AccountModel(data);
 
 		return accountDetail.save();
 	},

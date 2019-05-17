@@ -8,15 +8,6 @@ const accountManagement = {
 	addAccount: data => new Promise(async (resolve, reject) => {
 		const hashed = await bcrypt.hash(data.password, saltRounds);
 		const lastIndex = await db.getTotalIndex();
-		const accountExist = await db.getAccountByUsername(data.username);
-		if (accountExist.length > 0) {
-			const accountExistsObj = {
-				account: accountExist[0].username,
-				message: 'Username already exists'
-			};
-			resolve(accountExistsObj);
-			return;
-		}
 		const nextIndex = lastIndex.length + 1;
 		const postHashed = {
 			id: nextIndex,

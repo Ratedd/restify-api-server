@@ -21,6 +21,7 @@
     "dotenv": "^7.0.0",
     "dynamoose": "^1.7.2",
     "restify": "^8.3.1",
+    "restify-errors": "^8.0.0",
     "winston": "^3.2.1",
     "winston-daily-rotate-file": "^3.9.0"
   }
