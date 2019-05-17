@@ -3,7 +3,7 @@ const restify = require('restify');
 const bridge = require('./structure/bridge.js');
 const bcrypt = require('bcrypt');
 const accountManagement = require('./structure/accountManagement.js');
-const faqManagement = require('./structure/faqManagement.js');
+// const faqManagement = require('./structure/faqManagement.js');
 const keywordManagement = require('./structure/keywordManagement.js');
 const errors = require('./util/error.js');
 
