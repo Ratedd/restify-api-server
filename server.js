@@ -16,7 +16,6 @@ server.use(restify.plugins.acceptParser(server.acceptable));
 server.use(restify.plugins.queryParser({ mapParams: true }));
 server.use(restify.plugins.authorizationParser());
 server.use(restify.plugins.bodyParser());
-server.use(restify.plugins.jsonBodyParser());
 server.pre(restify.plugins.pre.sanitizePath());
 
 server.logger = require('./util/logger.js');
@@ -95,7 +94,39 @@ server.get('/api/getkeywords', (req, res, next) => {
 });
 
 server.post('/api/addkeywords', (req, res, next) => {
-	server.logger.info('req.body', req.body);
+	const { keywords } = req.body;
+	if (!keywords) {
+		res.send(200, { message: 'Invalid Body' });
+		return next();
+	}
+	const splitted = keywords.split(',');
+	const trimmed = [];
+	for (let i = 0; i < splitted.length; i++) {
+		trimmed.push(splitted[i].trim());
+	}
+	keywordManagement.addKeywords(trimmed).then(data => {
+		server.logger.info('data', data);
+	}).catch(err => {
+		server.logger.error('error', err);
+	});
+});
+
+server.put('/api/updatekeywords', (req, res, next) => {
+	const { keywords } = req.body;
+	if (!keywords) {
+		res.send(200, { message: 'Invalid Body' });
+		return next();
+	}
+	const splitted = keywords.split(',');
+	const trimmed = [];
+	for (let i = 0; i < splitted.length; i++) {
+		trimmed.push(splitted[i].trim());
+	}
+	keywordManagement.updateKeywords(trimmed).then(data => {
+		server.logger.info('data', data);
+	}).catch(err => {
+		server.logger.error('error', err);
+	});
 });
 
 server.listen(3000, () => {
