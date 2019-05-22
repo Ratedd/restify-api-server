@@ -33,25 +33,29 @@ const databaseManager = {
 		});
 
 		faqSchema = new Schema({
+			id: {
+				type: Number,
+				required: true,
+				hashKey: true
+			},
 			moduleCode: {
 				type: String,
-				required: true,
-				rangeKey: true,
-				index: true
+				required: true
 			},
 			questions: {
 				type: Array,
 				required: true
 			},
 			keywords: {
-				type: Array
+				type: Number
 			}
 		});
 
 		keywordSchema = new Schema({
 			id: {
 				type: Number,
-				hashKey: true
+				hashKey: true,
+				required: true
 			},
 			keywords: {
 				type: Array
@@ -76,9 +80,10 @@ const databaseManager = {
 	},
 	addFaq: data => {
 		const faqDetail = new FaqModel({
+			id: data.id,
 			moduleCode: data.moduleCode,
 			questions: data.questions,
-			keywords: data.keywords ? data.keywords : []
+			keywords: data.keywords
 		});
 
 		return faqDetail.save();
@@ -104,7 +109,21 @@ const databaseManager = {
 		});
 
 		return subscriberDetail.save();
-	}
+	},
+	populateFaq: id => new Promise((resolve, reject) => {
+		FaqModel.get(id).then(faqData => {
+			faqData.populate({
+				path: 'keywords',
+				model: 'keywords'
+			}).then(populated => {
+				resolve(populated);
+			}).catch(err => {
+				reject(err);
+			});
+		}).catch(err => {
+			reject(err);
+		});
+	})
 };
 
 module.exports = databaseManager;

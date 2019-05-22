@@ -3,7 +3,7 @@ const restify = require('restify');
 const bridge = require('./structure/bridge.js');
 const bcrypt = require('bcrypt');
 const accountManagement = require('./structure/accountManagement.js');
-// const faqManagement = require('./structure/faqManagement.js');
+const faqManagement = require('./structure/faqManagement.js');
 const keywordManagement = require('./structure/keywordManagement.js');
 const errors = require('./util/error.js');
 
@@ -105,6 +105,35 @@ server.put('/api/updatekeywords', (req, res, next) => {
 		trimmed.push(splitted[i].trim());
 	}
 	keywordManagement.updateKeywords(trimmed).then(data => {
+		server.logger.info('data', data);
+	}).catch(err => {
+		server.logger.error('error', err);
+	});
+});
+
+server.post('/api/addfaq', (req, res, next) => {
+	const data = req.body;
+	const splitted = data.questions.split(',');
+	const trimmed = [];
+	for (let i = 0; i < splitted.length; i++) {
+		trimmed.push(splitted[i].trim());
+	}
+	const newData = {
+		id: data.id,
+		moduleCode: data.moduleCode,
+		questions: trimmed,
+		keywords: data.keywords
+	};
+	faqManagement.addFaq(newData).then(added => {
+		server.logger.info('added', added);
+	}).catch(err => {
+
+	});
+});
+
+server.get('/api/getfaq', (req, res, next) => {
+	const { moduleCode } = req.body;
+	faqManagement.getAndPopulate(moduleCode).then(data => {
 		server.logger.info('data', data);
 	}).catch(err => {
 		server.logger.error('error', err);
