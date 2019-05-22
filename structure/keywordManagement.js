@@ -3,15 +3,6 @@ const db = bridge.getDB();
 const logger = require('../util/logger.js');
 
 const keywordManagement = {
-	getKeywords: () => new Promise((resolve, reject) => {
-		db.getKeywords().then(data => {
-			logger.debug('[keywordManagement - getKeywords()]', data);
-			resolve(data);
-		}).catch(err => {
-			logger.error('[keywordManagement - getKeywords()]', err);
-			reject(err);
-		});
-	}),
 	updateKeywords: (moduleCode, keywordsArr) => new Promise((resolve, reject) => {
 		db.getFaqByModuleCode(moduleCode).then(module => {
 			const { id } = module[0];

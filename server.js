@@ -81,18 +81,6 @@ server.get('/api/verifyaccount', (req, res, next) => {
 	});
 });
 
-server.get('/api/getkeywords', (req, res, next) => {
-	keywordManagement.getKeywords().then(data => {
-		server.logger.info('data', data);
-		res.send(200, data);
-		return next();
-	}).catch(err => {
-		server.logger.error('[server - /api/getkeywords]', err);
-		res.send(500, err);
-		return next();
-	});
-});
-
 server.put('/api/updatekeywords', (req, res, next) => {
 	const { moduleCode, keywords } = req.body;
 	if (!keywords) {
@@ -132,11 +120,14 @@ server.post('/api/addfaq', (req, res, next) => {
 });
 
 server.get('/api/getfaq', (req, res, next) => {
-	const { moduleCode } = req.body;
-	faqManagement.getAndPopulate(moduleCode).then(data => {
+	const { moduleCode } = JSON.parse(req.body);
+	faqManagement.getFaqByModuleCodeAndPopulate(moduleCode).then(data => {
 		server.logger.info('data', data);
+		res.send(200, data);
+		return next();
 	}).catch(err => {
 		server.logger.error('error', err);
+		return next(errors.internalServerError());
 	});
 });
 

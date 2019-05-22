@@ -20,6 +20,7 @@
     "bcrypt": "^3.0.6",
     "dotenv": "^7.0.0",
     "dynamoose": "^1.7.3",
+    "lodash": "^4.17.11",
     "restify": "^8.3.1",
     "restify-errors": "^8.0.0",
     "winston": "^3.2.1",
