@@ -177,6 +177,15 @@ server.del('/api/removesubscriber', (req, res, next) => {
 	});
 });
 
+server.get('/api/searchkeyword', (req, res, next) => {
+	const { keywords } = req.body;
+	faqManagement.searchFaqByKeywords(keywords).then(data => {
+
+	}).catch(err => {
+
+	});
+});
+
 server.listen(3000, () => {
 	bridge.initializeDB();
 	server.logger.info(`${server.name} listening at ${server.url}`);

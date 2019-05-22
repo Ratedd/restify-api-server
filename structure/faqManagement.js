@@ -54,6 +54,13 @@ const faqManagement = {
 			logger.error('[faqManagement - getFaqByModuleCodeAndPopulate: 1]\n', err);
 			reject(err);
 		});
+	}),
+	searchFaqByKeywords: keywords => new Promise((resolve, reject) => {
+		const items = [];
+		db.getFaqs().then(faqs => {
+		}).catch(err => {
+
+		});
 	})
 };
 
