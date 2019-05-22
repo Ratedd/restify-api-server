@@ -146,7 +146,12 @@ server.get('/api/getfaq', (req, res, next) => {
 });
 
 server.post('/api/addsubscriber', (req, res, next) => {
-	const data = JSON.parse(req.body);
+	let data;
+	try {
+		data = JSON.parse(req.body);
+	} catch (err) {
+		data = req.body;
+	}
 	subscriberManagement.addSubscriber(data).then(subscriber => {
 		server.logger.info('[server - /api/addsubscriber]', subscriber);
 		res.send(200, subscriber);
