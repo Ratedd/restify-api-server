@@ -1,6 +1,7 @@
 const bridge = require('./bridge.js');
 const db = bridge.getDB();
 const logger = require('../util/logger.js');
+const _ = require('lodash');
 
 const faqManagement = {
 	addFaq: data => new Promise((resolve, reject) => {
@@ -55,11 +56,18 @@ const faqManagement = {
 			reject(err);
 		});
 	}),
-	searchFaqByKeywords: keywords => new Promise((resolve, reject) => {
-		const items = [];
-		db.getFaqs().then(faqs => {
+	searchFaqByKeyword: keyword => new Promise((resolve, reject) => {
+		db.populateFaqs().then(data => {
+			const contains = [];
+			for (let i = 0; i < data.length; i++) {
+				if (!data[i].keywords.keywords.includes(_.toString(keyword))) continue;
+				contains.push(data[i]);
+			}
+			logger.error('[faqManagement - searchFaqByKeyword]\n', contains);
+			resolve(contains);
 		}).catch(err => {
-
+			logger.error('[faqManagement - searchFaqByKeyword]\n', err);
+			reject(err);
 		});
 	})
 };

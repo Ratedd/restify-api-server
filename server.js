@@ -2,6 +2,7 @@ require('dotenv').config();
 const restify = require('restify');
 const bridge = require('./structure/bridge.js');
 const bcrypt = require('bcrypt');
+const _ = require('lodash');
 const accountManagement = require('./structure/accountManagement.js');
 const faqManagement = require('./structure/faqManagement.js');
 const keywordManagement = require('./structure/keywordManagement.js');
@@ -89,10 +90,7 @@ server.put('/api/updatekeywords', (req, res, next) => {
 		return next();
 	}
 	const splitted = keywords.split(',');
-	const trimmed = [];
-	for (let i = 0; i < splitted.length; i++) {
-		trimmed.push(splitted[i].trim());
-	}
+	const trimmed = _.map(splitted, _.trim);
 	keywordManagement.updateKeywords(moduleCode, trimmed).then(data => {
 		server.logger.info('[server - /api/updatekeywords]\n', data);
 		res.send(200, data);
@@ -111,14 +109,8 @@ server.post('/api/addfaq', (req, res, next) => {
 	}
 	const splitted = questions.split(',');
 	const splittedKeywords = keywords.split(',');
-	const trimmed = [];
-	const trimmedKeywords = [];
-	for (let i = 0; i < splitted.length; i++) {
-		trimmed.push(splitted[i].trim());
-	}
-	for (let i = 0; i < splittedKeywords.length; i++) {
-		trimmedKeywords.push(splittedKeywords[i].trim());
-	}
+	const trimmed = _.map(splitted, _.trim);
+	const trimmedKeywords = _.map(splittedKeywords, _.trim);
 	const newData = {
 		moduleCode: moduleCode, // eslint-disable-line object-shorthand
 		questions: trimmed,
@@ -178,8 +170,8 @@ server.del('/api/removesubscriber', (req, res, next) => {
 });
 
 server.get('/api/searchkeyword', (req, res, next) => {
-	const { keywords } = req.body;
-	faqManagement.searchFaqByKeywords(keywords).then(data => {
+	const { keyword } = req.body;
+	faqManagement.searchFaqByKeyword(keyword.toString()).then(data => {
 
 	}).catch(err => {
 

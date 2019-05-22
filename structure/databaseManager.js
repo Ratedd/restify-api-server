@@ -117,6 +117,18 @@ const databaseManager = {
 		}).catch(err => {
 			reject(err);
 		});
+	}),
+	populateFaqs: () => new Promise((resolve, reject) => {
+		FaqModel.scan().exec().then(faqs => Promise.all(faqs.map(faq => faq.populate({
+			path: 'keywords',
+			model: 'keywords'
+		}))))
+			.then(faqs => {
+				resolve(faqs);
+			})
+			.catch(err => {
+				reject(err);
+			});
 	})
 };
 
