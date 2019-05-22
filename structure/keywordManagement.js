@@ -12,17 +12,18 @@ const keywordManagement = {
 			reject(err);
 		});
 	}),
-	addKeywords: keywordArr => new Promise((resolve, reject) => {
-		db.addKeywords(keywordArr).then(data => {
-			logger.debug('[keywordManagement - addKeyword(keyword)]', data);
-			resolve(data);
-		}).catch(err => {
-			logger.error('[keywordManagement - addKeyword(keyword)]', err);
-			reject(err);
-		});
-	}),
 	updateKeywords: keywordsArr => new Promise((resolve, reject) => {
 		db.getKeywords().then(data => {
+			if (data.count < 1) {
+				db.updateKeywords(keywordsArr).then(updated => {
+					logger.info('[keywordManagement - updateKeywords(keywordsArr): 2]', updated);
+					resolve(updated);
+				}).catch(err => {
+					logger.error('[keywordManagement - updateKeywords(keywordsArr): 2]', err);
+					reject(err);
+				});
+				return;
+			}
 			const newArr = data[0].keywords;
 			keywordsArr.forEach(keyword => {
 				newArr.push(keyword);

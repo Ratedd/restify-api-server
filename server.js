@@ -93,24 +93,6 @@ server.get('/api/getkeywords', (req, res, next) => {
 	});
 });
 
-server.post('/api/addkeywords', (req, res, next) => {
-	const { keywords } = req.body;
-	if (!keywords) {
-		res.send(200, { message: 'Invalid Body' });
-		return next();
-	}
-	const splitted = keywords.split(',');
-	const trimmed = [];
-	for (let i = 0; i < splitted.length; i++) {
-		trimmed.push(splitted[i].trim());
-	}
-	keywordManagement.addKeywords(trimmed).then(data => {
-		server.logger.info('data', data);
-	}).catch(err => {
-		server.logger.error('error', err);
-	});
-});
-
 server.put('/api/updatekeywords', (req, res, next) => {
 	const { keywords } = req.body;
 	if (!keywords) {
