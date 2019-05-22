@@ -146,13 +146,28 @@ server.get('/api/getfaq', (req, res, next) => {
 });
 
 server.post('/api/addsubscriber', (req, res, next) => {
-	const data = req.body;
+	const data = JSON.parse(req.body);
 	subscriberManagement.addSubscriber(data).then(subscriber => {
 		server.logger.info('[server - /api/addsubscriber]', subscriber);
 		res.send(200, subscriber);
 		return next();
 	}).catch(err => {
 		server.logger.error('[server - /api/addsubscriber]', err);
+		return next(errors.internalServerError());
+	});
+});
+
+server.del('/api/removesubscriber', (req, res, next) => {
+	const { id } = req.body;
+	if (!id) {
+		res.send(200, { message: 'One or more fields are missing' });
+		return next();
+	}
+	subscriberManagement.removeSubscriber(id).then(subscriber => {
+		res.send(200, subscriber);
+		return next();
+	}).catch(err => {
+		server.logger.error('[server - /api/removesubscriber]', err);
 		return next(errors.internalServerError());
 	});
 });

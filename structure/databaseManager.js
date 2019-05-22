@@ -64,7 +64,7 @@ const databaseManager = {
 
 		subscriberSchema = new Schema({
 			id: {
-				type: String,
+				type: Number,
 				required: true
 			},
 			name: {
@@ -101,9 +101,9 @@ const databaseManager = {
 	getKeywordsById: id => KeywordModel.get(id),
 	addSubscriber: data => {
 		const subscriberDetail = new SubscriberModel(data);
-
 		return subscriberDetail.save();
 	},
+	removeSubscriber: id => SubscriberModel.delete(id),
 	populateFaq: id => new Promise((resolve, reject) => {
 		FaqModel.get(id).then(faqData => {
 			faqData.populate({
