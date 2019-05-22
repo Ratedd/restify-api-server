@@ -5,6 +5,7 @@ const bcrypt = require('bcrypt');
 const accountManagement = require('./structure/accountManagement.js');
 const faqManagement = require('./structure/faqManagement.js');
 const keywordManagement = require('./structure/keywordManagement.js');
+const subscriberManagement = require('./structure/subscriberManagement.js');
 const errors = require('./util/error.js');
 
 const server = restify.createServer({
@@ -140,6 +141,18 @@ server.get('/api/getfaq', (req, res, next) => {
 		return next();
 	}).catch(err => {
 		server.logger.error('[server - /api/getfaq]\n', err);
+		return next(errors.internalServerError());
+	});
+});
+
+server.post('/api/addsubscriber', (req, res, next) => {
+	const data = req.body;
+	subscriberManagement.addSubscriber(data).then(subscriber => {
+		server.logger.info('[server - /api/addsubscriber]', subscriber);
+		res.send(200, subscriber);
+		return next();
+	}).catch(err => {
+		server.logger.error('[server - /api/addsubscriber]', err);
 		return next(errors.internalServerError());
 	});
 });

@@ -100,10 +100,7 @@ const databaseManager = {
 	updateKeywords: (index, newArr) => KeywordModel.update({ id: index, keywords: newArr }),
 	getKeywordsById: id => KeywordModel.get(id),
 	addSubscriber: data => {
-		const subscriberDetail = new SubscriberModel({
-			id: data.id,
-			name: data.name
-		});
+		const subscriberDetail = new SubscriberModel(data);
 
 		return subscriberDetail.save();
 	},
