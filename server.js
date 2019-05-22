@@ -83,8 +83,8 @@ server.get('/api/verifyaccount', (req, res, next) => {
 
 server.put('/api/updatekeywords', (req, res, next) => {
 	const { moduleCode, keywords } = req.body;
-	if (!keywords) {
-		res.send(200, { message: 'Invalid Body' });
+	if (!moduleCode || !keywords) {
+		res.send(200, { message: 'One or more fields are missing' });
 		return next();
 	}
 	const splitted = keywords.split(',');
@@ -94,21 +94,34 @@ server.put('/api/updatekeywords', (req, res, next) => {
 	}
 	keywordManagement.updateKeywords(moduleCode, trimmed).then(data => {
 		server.logger.info('[server - /api/updatekeywords]\n', data);
+		res.send(200, data);
+		return next();
 	}).catch(err => {
 		server.logger.error('[server - /api/updatekeywords]\n', err);
+		return next(errors.internalServerError());
 	});
 });
 
 server.post('/api/addfaq', (req, res, next) => {
-	const data = req.body;
-	const splitted = data.questions.split(',');
+	const { moduleCode, questions, keywords } = req.body;
+	if (!moduleCode || !questions || !keywords) {
+		res.send(200, { message: 'One or more fields are missing' });
+		return next();
+	}
+	const splitted = questions.split(',');
+	const splittedKeywords = keywords.split(',');
 	const trimmed = [];
+	const trimmedKeywords = [];
 	for (let i = 0; i < splitted.length; i++) {
 		trimmed.push(splitted[i].trim());
 	}
+	for (let i = 0; i < splittedKeywords.length; i++) {
+		trimmedKeywords.push(splittedKeywords[i].trim());
+	}
 	const newData = {
-		moduleCode: data.moduleCode,
-		questions: trimmed
+		moduleCode: moduleCode, // eslint-disable-line object-shorthand
+		questions: trimmed,
+		keywords: trimmedKeywords
 	};
 	faqManagement.addFaq(newData).then(added => {
 		server.logger.info('[server - /api/addfaq]\n', added);

@@ -12,14 +12,21 @@ const faqManagement = {
 				questions: data.questions,
 				keywords: index
 			};
+			const keywordsArr = data.keywords;
 			db.getFaqByModuleCode(dataToAdd.moduleCode).then(faq => {
 				if (faq.count > 0) {
-					resolve({ message: 'FAQ already exists. '});
+					resolve({ message: 'FAQ already exists.' });
 					return;
 				}
 				db.addFaq(dataToAdd).then(added => {
 					logger.info('[faqManagement - addFaq(data): 3]\n', added);
-					resolve(added);
+					db.updateKeywords(index, keywordsArr).then(keywords => {
+						logger.info('[faqManagement - addFaq(data): 4]\n', keywords);
+						resolve(added);
+					}).catch(err => {
+						logger.error('[faqManagement - addFaq(data): 4]\n', err);
+						reject(err);
+					});
 				}).catch(err => {
 					logger.error('[faqManagement - addFaq(data): 3]\n', err);
 					reject(err);
