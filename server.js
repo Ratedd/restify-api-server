@@ -15,7 +15,7 @@ const server = restify.createServer({
 server.use(restify.plugins.acceptParser(server.acceptable));
 server.use(restify.plugins.queryParser({ mapParams: true }));
 server.use(restify.plugins.authorizationParser());
-server.use(restify.plugins.bodyParser());
+server.use(restify.plugins.bodyParser({ requestBodyOnGet: true }));
 server.pre(restify.plugins.pre.sanitizePath());
 
 server.logger = require('./util/logger.js');
@@ -120,7 +120,7 @@ server.post('/api/addfaq', (req, res, next) => {
 });
 
 server.get('/api/getfaq', (req, res, next) => {
-	const { moduleCode } = JSON.parse(req.body);
+	const { moduleCode } = req.body;
 	faqManagement.getFaqByModuleCodeAndPopulate(moduleCode).then(data => {
 		server.logger.info('data', data);
 		res.send(200, data);
