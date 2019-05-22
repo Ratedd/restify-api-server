@@ -96,12 +96,8 @@ const databaseManager = {
 	getTotalIndex: () => AccountModel.scan().exec(),
 	getAccountByUsername: inputUsername => AccountModel.scan({ username: inputUsername }).exec(),
 	getFaqByModuleCode: inputModuleCode => FaqModel.scan({ moduleCode: inputModuleCode }).exec(),
-	updateKeywords: newArr => KeywordModel.update({ id: 1, keywords: newArr }),
-	getKeywords: () => KeywordModel.scan().exec(),
-	getFaqByKeyword: keyword => {
-		const keywordArray = [keyword];
-		return FaqModel.scan({ keywords: keywordArray }).exec();
-	},
+	updateKeywords: (index, newArr) => KeywordModel.update({ id: index, keywords: newArr }),
+	getKeywordsById: id => KeywordModel.get(id),
 	addSubscriber: data => {
 		const subscriberDetail = new SubscriberModel({
 			id: data.id,

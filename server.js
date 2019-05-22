@@ -94,7 +94,7 @@ server.get('/api/getkeywords', (req, res, next) => {
 });
 
 server.put('/api/updatekeywords', (req, res, next) => {
-	const { keywords } = req.body;
+	const { moduleCode, keywords } = req.body;
 	if (!keywords) {
 		res.send(200, { message: 'Invalid Body' });
 		return next();
@@ -104,7 +104,7 @@ server.put('/api/updatekeywords', (req, res, next) => {
 	for (let i = 0; i < splitted.length; i++) {
 		trimmed.push(splitted[i].trim());
 	}
-	keywordManagement.updateKeywords(trimmed).then(data => {
+	keywordManagement.updateKeywords(moduleCode, trimmed).then(data => {
 		server.logger.info('data', data);
 	}).catch(err => {
 		server.logger.error('error', err);

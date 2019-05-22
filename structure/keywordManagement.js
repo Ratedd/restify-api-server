@@ -12,31 +12,27 @@ const keywordManagement = {
 			reject(err);
 		});
 	}),
-	updateKeywords: keywordsArr => new Promise((resolve, reject) => {
-		db.getKeywords().then(data => {
-			if (data.count < 1) {
-				db.updateKeywords(keywordsArr).then(updated => {
+	updateKeywords: (moduleCode, keywordsArr) => new Promise((resolve, reject) => {
+		db.getFaqByModuleCode(moduleCode).then(module => {
+			const { id } = module[0];
+			db.getKeywordsById(id).then(data => {
+				const newArr = data.keywords;
+				keywordsArr.forEach(keyword => {
+					newArr.push(keyword);
+				});
+				db.updateKeywords(id, newArr).then(updated => {
 					logger.info('[keywordManagement - updateKeywords(keywordsArr): 2]', updated);
 					resolve(updated);
 				}).catch(err => {
-					logger.error('[keywordManagement - updateKeywords(keywordsArr): 2]', err);
+					logger.error('[keywordManagement - updateKeywords(moduleCode, keywordsArr): 3]\n', err);
 					reject(err);
 				});
-				return;
-			}
-			const newArr = data[0].keywords;
-			keywordsArr.forEach(keyword => {
-				newArr.push(keyword);
-			});
-			db.updateKeywords(newArr).then(updated => {
-				logger.info('[keywordManagement - updateKeywords(keywordsArr): 2]', updated);
-				resolve(updated);
 			}).catch(err => {
-				logger.error('[keywordManagement - updateKeywords(keywordsArr): 2]', err);
+				logger.error('[keywordManagement - updateKeywords(moduleCode, keywordsArr): 2]\n', err);
 				reject(err);
 			});
 		}).catch(err => {
-			logger.error('[keywordManagement - updateKeywords(keywordsArr): 1]', err);
+			logger.error('[keywordManagement - updateKeywords(moduleCode, keywordsArr): 1]\n', err);
 			reject(err);
 		});
 	})
