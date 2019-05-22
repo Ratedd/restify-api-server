@@ -19,16 +19,19 @@ const accountManagement = {
 				account: done.username,
 				message: 'Account created'
 			};
+			logger.error('[accountManagement - addAccount(data)]\n', done);
 			resolve(createdAccount);
 		}).catch(err => {
-			logger.error(`[AccountManagement] ${err}`);
+			logger.error('[accountManagement - addAccount(data)]\n', err);
 			reject(err);
 		});
 	}),
 	getAccountByUsername: inputUsername => new Promise((resolve, reject) => {
 		db.getAccountByUsername(inputUsername).then(data => {
+			logger.error('[accountManagement - getAccountByUsername(inputUsername)]\n', data);
 			resolve(data);
 		}).catch(err => {
+			logger.error('[accountManagement - getAccountByUsername(inputUsername)]\n', err);
 			reject(err);
 		});
 	})

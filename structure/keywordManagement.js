@@ -12,7 +12,7 @@ const keywordManagement = {
 					newArr.push(keyword);
 				});
 				db.updateKeywords(id, newArr).then(updated => {
-					logger.info('[keywordManagement - updateKeywords(keywordsArr): 2]', updated);
+					logger.info('[keywordManagement - updateKeywords(keywordsArr): 2]\n', updated);
 					resolve(updated);
 				}).catch(err => {
 					logger.error('[keywordManagement - updateKeywords(moduleCode, keywordsArr): 3]\n', err);

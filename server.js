@@ -93,9 +93,9 @@ server.put('/api/updatekeywords', (req, res, next) => {
 		trimmed.push(splitted[i].trim());
 	}
 	keywordManagement.updateKeywords(moduleCode, trimmed).then(data => {
-		server.logger.info('data', data);
+		server.logger.info('[server - /api/updatekeywords]\n', data);
 	}).catch(err => {
-		server.logger.error('error', err);
+		server.logger.error('[server - /api/updatekeywords]\n', err);
 	});
 });
 
@@ -107,26 +107,26 @@ server.post('/api/addfaq', (req, res, next) => {
 		trimmed.push(splitted[i].trim());
 	}
 	const newData = {
-		id: data.id,
 		moduleCode: data.moduleCode,
-		questions: trimmed,
-		keywords: data.keywords
+		questions: trimmed
 	};
 	faqManagement.addFaq(newData).then(added => {
-		server.logger.info('added', added);
+		server.logger.info('[server - /api/addfaq]\n', added);
+		res.send(200, added);
 	}).catch(err => {
-
+		server.logger.error('[server - /api/addfaq]\n', err);
+		return next(errors.internalServerError());
 	});
 });
 
 server.get('/api/getfaq', (req, res, next) => {
 	const { moduleCode } = req.body;
 	faqManagement.getFaqByModuleCodeAndPopulate(moduleCode).then(data => {
-		server.logger.info('data', data);
+		server.logger.info('[server - /api/getfaq]\n', data);
 		res.send(200, data);
 		return next();
 	}).catch(err => {
-		server.logger.error('error', err);
+		server.logger.error('[server - /api/getfaq]\n', err);
 		return next(errors.internalServerError());
 	});
 });
