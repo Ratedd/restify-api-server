@@ -40,7 +40,17 @@ const subscriberManagement = {
 		});
 	}),
 	getSubscribers: () => new Promise((resolve, reject) => {
-
+		db.getSubscribers().then(data => {
+			if (data.count < 1) {
+				resolve();
+				return;
+			}
+			logger.info('[subscriberManagement - getSubscribers()]\n', data);
+			resolve(data);
+		}).catch(err => {
+			logger.error('[subscriberManagement - getSubscribers()]\n', err);
+			reject(err);
+		});
 	})
 };
 

@@ -214,6 +214,21 @@ server.get('/api/searchfaqbykeywords', (req, res, next) => {
 	});
 });
 
+server.get('/api/getsubscribers', (req, res, next) => {
+	subscriberManagement.getSubscribers().then(data => {
+		if (!data) {
+			res.send(200, { message: 'No subscribers found', data: [] });
+			return next();
+		}
+		server.logger.info('[server - /api/getsubscribers]\n', data);
+		res.send(200, data);
+		return next();
+	}).catch(err => {
+		server.logger.error('[server - /api/getsubscribers]\n', err);
+		return next(errors.internalServerError());
+	});
+});
+
 server.listen(3000, () => {
 	bridge.initializeDB();
 	server.logger.info(`${server.name} listening at ${server.url}`);
