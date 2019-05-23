@@ -5,6 +5,10 @@ const logger = require('../util/logger.js');
 const keywordManagement = {
 	updateKeywords: (moduleCode, keywordsArr) => new Promise((resolve, reject) => {
 		db.getFaqByModuleCode(moduleCode).then(module => {
+			if (module.count < 1) {
+				resolve();
+				return;
+			}
 			const { id } = module[0];
 			db.getKeywordsById(id).then(data => {
 				const newArr = data.keywords;

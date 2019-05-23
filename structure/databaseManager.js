@@ -65,7 +65,8 @@ const databaseManager = {
 		subscriberSchema = new Schema({
 			id: {
 				type: Number,
-				required: true
+				required: true,
+				hashKey: true
 			},
 			name: {
 				type: String,
@@ -104,6 +105,8 @@ const databaseManager = {
 		return subscriberDetail.save();
 	},
 	removeSubscriber: id => SubscriberModel.delete(id),
+	getSubscriberById: id => SubscriberModel.get(id),
+	getSubscribers: () => SubscriberModel.scan().exec(),
 	populateFaq: id => new Promise((resolve, reject) => {
 		FaqModel.get(id).then(faqData => {
 			faqData.populate({
