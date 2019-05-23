@@ -106,18 +106,22 @@ server.put('/api/updatekeywords', (req, res, next) => {
 });
 
 server.post('/api/addfaq', (req, res, next) => {
-	const { moduleCode, questions, keywords } = req.body;
-	if (!moduleCode || !questions || !keywords) {
+	const { moduleCode, questions, answers, keywords } = req.body;
+	if (!moduleCode || !questions || !keywords || !answers) {
 		res.send(200, { message: 'One or more fields are missing' });
 		return next();
 	}
-	const splitted = questions.split(',');
-	const splittedKeywords = keywords.split(',');
-	const trimmed = _.map(splitted, _.trim);
+
+	const splittedQuestions = questions.split(';');
+	const splittedAnswers = answers.split(';');
+	const splittedKeywords = keywords.split(';');
+	const trimmedQuestions = _.map(splittedQuestions, _.trim);
+	const trimmedAnswers = _.map(splittedAnswers, _.trim);
 	const trimmedKeywords = _.map(splittedKeywords, _.trim);
 	const newData = {
 		moduleCode: moduleCode, // eslint-disable-line object-shorthand
-		questions: trimmed,
+		questions: trimmedQuestions,
+		answers: trimmedAnswers,
 		keywords: trimmedKeywords
 	};
 	faqManagement.addFaq(newData).then(added => {

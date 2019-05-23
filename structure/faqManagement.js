@@ -11,6 +11,7 @@ const faqManagement = {
 				id: index,
 				moduleCode: data.moduleCode,
 				questions: data.questions,
+				answers: data.answers,
 				keywords: index
 			};
 			const keywordsArr = data.keywords;

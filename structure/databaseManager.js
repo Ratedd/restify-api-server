@@ -88,6 +88,7 @@ const databaseManager = {
 			id: data.id,
 			moduleCode: data.moduleCode,
 			questions: data.questions,
+			answers: data.answers,
 			keywords: data.keywords
 		});
 
