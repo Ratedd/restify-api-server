@@ -51,6 +51,19 @@ const subscriberManagement = {
 			logger.error('[subscriberManagement - getSubscribers()]\n', err);
 			reject(err);
 		});
+	}),
+	getSubscriberById: id => new Promise((resolve, reject) => {
+		db.getSubscriberById(id).then(data => {
+			if (!data) {
+				resolve(data);
+				return;
+			}
+			logger.info('[subscriberManagement - getSubscriberById(id)]\n', data);
+			resolve(data);
+		}).catch(err => {
+			logger.error('[subscriberManagement - getSubscriberById(id)]\n', err);
+			reject(err);
+		});
 	})
 };
 

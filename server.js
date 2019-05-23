@@ -89,7 +89,7 @@ server.put('/api/updatekeywords', (req, res, next) => {
 		res.send(200, { message: 'One or more fields are missing' });
 		return next();
 	}
-	const splitted = keywords.split(',');
+	const splitted = keywords.split(';');
 	const trimmed = _.map(splitted, _.trim);
 	keywordManagement.updateKeywords(moduleCode, trimmed).then(data => {
 		if (!data) {
@@ -229,6 +229,26 @@ server.get('/api/getsubscribers', (req, res, next) => {
 		return next();
 	}).catch(err => {
 		server.logger.error('[server - /api/getsubscribers]\n', err);
+		return next(errors.internalServerError());
+	});
+});
+
+server.get('/api/getsubscriberbyid', (req, res, next) => {
+	const { id } = req.body;
+	if (!id) {
+		res.send(200, { message: 'One or more fields are missing' });
+		return next();
+	}
+	subscriberManagement.getSubscriberById(id).then(data => {
+		if (!data) {
+			res.send(200, { message: 'User is not subscribed' });
+			return next();
+		}
+		server.logger.info('[server - /api/getsubscriberbyid]\n', data);
+		res.send(200, data);
+		return next();
+	}).catch(err => {
+		server.logger.error('[server - /api/getsubscriberbyid]\n', err);
 		return next(errors.internalServerError());
 	});
 });
