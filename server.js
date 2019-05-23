@@ -202,6 +202,12 @@ server.get('/api/searchfaqbykeywords', (req, res, next) => {
 			res.send(200, { message: 'No data found' });
 			return next();
 		}
+		if (data.length < 1) {
+			res.send(200, { message: `No faq found with the keyword(s): ${trimmed}`, data });
+			return next();
+		}
+		res.send(200, data);
+		return next();
 	}).catch(err => {
 		server.logger.error('[server - /api/searchfaqbykeywords]\n', err);
 		return next(errors.internalServerError());

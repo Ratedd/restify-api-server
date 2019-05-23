@@ -68,7 +68,7 @@ const faqManagement = {
 			}
 			const contains = [];
 			for (let i = 0; i < data.length; i++) {
-				for (let k = 0; i < keywords; i++) {
+				for (let k = 0; k < keywords.length; k++) {
 					if (!data[i].keywords.keywords.includes(_.toString(keywords[k]))) continue;
 					contains.push(data[i]);
 				}
