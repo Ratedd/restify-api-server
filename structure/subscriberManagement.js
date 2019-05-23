@@ -4,8 +4,8 @@ const logger = require('../util/logger.js');
 
 const subscriberManagement = {
 	addSubscriber: data => new Promise((resolve, reject) => {
-		db.getSubscriberById(data.id).then(data => {
-			if (data) {
+		db.getSubscriberById(data.id).then(subscriberInfo => {
+			if (subscriberInfo) {
 				resolve();
 				return;
 			}
