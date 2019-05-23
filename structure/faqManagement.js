@@ -43,6 +43,10 @@ const faqManagement = {
 	}),
 	getFaqByModuleCodeAndPopulate: moduleCode => new Promise((resolve, reject) => {
 		db.getFaqByModuleCode(moduleCode).then(data => {
+			if (data.count < 1) {
+				resolve();
+				return;
+			}
 			const { id } = data[0];
 			db.populateFaq(id).then(populated => {
 				logger.info('[faqManagement - getFaqByModuleCodeAndPopulate: 2]\n', populated);
@@ -56,14 +60,20 @@ const faqManagement = {
 			reject(err);
 		});
 	}),
-	searchFaqByKeyword: keyword => new Promise((resolve, reject) => {
+	searchFaqByKeywords: keywords => new Promise((resolve, reject) => {
 		db.populateFaqs().then(data => {
+			if (data.length < 1) {
+				resolve();
+				return;
+			}
 			const contains = [];
 			for (let i = 0; i < data.length; i++) {
-				if (!data[i].keywords.keywords.includes(_.toString(keyword))) continue;
-				contains.push(data[i]);
+				for (let k = 0; k < keywords.length; k++) {
+					if (!data[i].keywords.keywords.includes(_.toString(keywords[k]))) continue;
+					contains.push(data[i]);
+				}
 			}
-			logger.error('[faqManagement - searchFaqByKeyword]\n', contains);
+			logger.info('[faqManagement - searchFaqByKeyword]\n', contains);
 			resolve(contains);
 		}).catch(err => {
 			logger.error('[faqManagement - searchFaqByKeyword]\n', err);

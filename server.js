@@ -92,6 +92,10 @@ server.put('/api/updatekeywords', (req, res, next) => {
 	const splitted = keywords.split(',');
 	const trimmed = _.map(splitted, _.trim);
 	keywordManagement.updateKeywords(moduleCode, trimmed).then(data => {
+		if (!data) {
+			res.send(200, { message: 'There\'s no data to update' });
+			return next();
+		}
 		server.logger.info('[server - /api/updatekeywords]\n', data);
 		res.send(200, data);
 		return next();
@@ -128,6 +132,10 @@ server.post('/api/addfaq', (req, res, next) => {
 server.get('/api/getfaq', (req, res, next) => {
 	const { moduleCode } = req.body;
 	faqManagement.getFaqByModuleCodeAndPopulate(moduleCode).then(data => {
+		if (!data) {
+			res.send(200, { message: 'No data found' });
+			return next();
+		}
 		server.logger.info('[server - /api/getfaq]\n', data);
 		res.send(200, data);
 		return next();
@@ -144,7 +152,15 @@ server.post('/api/addsubscriber', (req, res, next) => {
 	} catch (err) {
 		data = req.body;
 	}
+	if (!data) {
+		res.send(200, { message: 'One or more fields are missing' });
+		return next();
+	}
 	subscriberManagement.addSubscriber(data).then(subscriber => {
+		if (!data) {
+			res.send(200, { message: 'User already subscribed', subscribed: true });
+			return next();
+		}
 		server.logger.info('[server - /api/addsubscriber]', subscriber);
 		res.send(200, subscriber);
 		return next();
@@ -161,6 +177,10 @@ server.del('/api/removesubscriber', (req, res, next) => {
 		return next();
 	}
 	subscriberManagement.removeSubscriber(id).then(subscriber => {
+		if (!subscriber) {
+			res.send(200, { message: 'User is not subscribed', subscribed: false });
+			return next();
+		}
 		res.send(200, subscriber);
 		return next();
 	}).catch(err => {
@@ -169,12 +189,28 @@ server.del('/api/removesubscriber', (req, res, next) => {
 	});
 });
 
-server.get('/api/searchkeyword', (req, res, next) => {
-	const { keyword } = req.body;
-	faqManagement.searchFaqByKeyword(keyword.toString()).then(data => {
-
+server.get('/api/searchfaqbykeywords', (req, res, next) => {
+	const { keywords } = req.body;
+	if (!keywords) {
+		res.send(200, { message: 'One or more fields are missing' });
+		return next();
+	}
+	const splitted = keywords.split(',');
+	const trimmed = _.map(splitted, _.trim);
+	faqManagement.searchFaqByKeywords(trimmed).then(data => {
+		if (!data) {
+			res.send(200, { message: 'No data found' });
+			return next();
+		}
+		if (data.length < 1) {
+			res.send(200, { message: `No faq found with the keyword(s): ${trimmed}`, data });
+			return next();
+		}
+		res.send(200, data);
+		return next();
 	}).catch(err => {
-
+		server.logger.error('[server - /api/searchfaqbykeywords]\n', err);
+		return next(errors.internalServerError());
 	});
 });
 
@@ -183,4 +219,4 @@ server.listen(3000, () => {
 	server.logger.info(`${server.name} listening at ${server.url}`);
 });
 
-process.on('unhandledRejection', err => server.logger.error('unhandledPromiseRejection\n', err));
+process.on('unhandledRejection', err => server.logger.error('[unhandledPromiseRejection]\n', err));
