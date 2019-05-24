@@ -1,5 +1,13 @@
 <!-- markdownlint-disable MD001 -->
 <!-- markdownlint-disable MD012 -->
+<!-- markdownlint-disable MD024 -->
+# 1.2.1 (2019-05-24)
+
+
+### Bug Fixes
+
+* not returning anything when user already sub ([e3313de](https://github.com/Ratedd/restify-api-server/commit/e3313de))
+
 # 1.2.0 (2019-05-23)
 
 
