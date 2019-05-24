@@ -161,7 +161,7 @@ server.post('/api/addsubscriber', (req, res, next) => {
 		return next();
 	}
 	subscriberManagement.addSubscriber(data).then(subscriber => {
-		if (!data) {
+		if (!subscriber) {
 			res.send(200, { message: 'User already subscribed', subscribed: true });
 			return next();
 		}
