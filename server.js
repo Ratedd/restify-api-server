@@ -106,7 +106,13 @@ server.put('/api/updatekeywords', (req, res, next) => {
 });
 
 server.post('/api/addfaq', (req, res, next) => {
-	const { moduleCode, questions, answers, keywords } = req.body;
+	let data;
+	try {
+		data = JSON.parse(req.body);
+	} catch (err) {
+		data = req.body;
+	}
+	const { moduleCode, questions, answers, keywords } = data;
 	if (!moduleCode || !questions || !keywords || !answers) {
 		res.send(200, { message: 'One or more fields are missing' });
 		return next();
@@ -259,3 +265,5 @@ server.listen(3000, () => {
 });
 
 process.on('unhandledRejection', err => server.logger.error('[unhandledPromiseRejection]\n', err));
+
+module.exports = server;
