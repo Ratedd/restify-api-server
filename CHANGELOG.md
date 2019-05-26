@@ -1,6 +1,18 @@
 <!-- markdownlint-disable MD001 -->
 <!-- markdownlint-disable MD012 -->
 <!-- markdownlint-disable MD024 -->
+# 1.2.2 (2019-05-26)
+
+
+### Bug Fixes
+
+* json not being parsed from stringified body ([673458a](https://github.com/Ratedd/restify-api-server/commit/673458a))
+
+### Features
+
+* removefaqbyindex ([77a203a](https://github.com/Ratedd/restify-api-server/commit/77a203a))
+
+
 # 1.2.1 (2019-05-24)
 
 
