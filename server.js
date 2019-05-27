@@ -181,7 +181,13 @@ server.post('/api/addsubscriber', (req, res, next) => {
 });
 
 server.del('/api/removesubscriber', (req, res, next) => {
-	const { id } = req.body;
+	let data;
+	try {
+		data = JSON.parse(req.body);
+	} catch (err) {
+		data = req.body;
+	}
+	const { id } = data;
 	if (!id) {
 		res.send(200, { message: 'One or more fields are missing' });
 		return next();
