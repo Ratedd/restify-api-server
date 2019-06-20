@@ -23,19 +23,20 @@ server.pre(restify.plugins.pre.sanitizePath());
 server.logger = require('./util/logger.js');
 
 server.post('/api/addaccount', (req, res, next) => {
-	// if (!Object.keys(req.authorization).length) {
-	// 	res.send(403, { error: 'Authentication Failed' });
-	// 	return next();
-	// }
-	// const { authorization } = req;
-	// console.log(authorization);
-	const data = req.body || req.params;
-	server.logger.info('data', data);
-	if (!data) {
-		res.send(200);
+	let data;
+	try {
+		data = JSON.parse(req.body);
+	} catch (err) {
+		data = req.body;
+	}
+	const { username, password } = data;
+
+	if (!username || !password) {
+		res.send(200, { message: 'One or more fields are missing' });
 		return next();
 	}
-	accountManagement.getAccountByUsername(data.username).then(account => {
+
+	accountManagement.getAccountByUsername(username).then(account => {
 		if (account.count > 0) {
 			res.send(200, { message: 'Account already exists' });
 			return next();
@@ -60,31 +61,52 @@ server.post('/api/addaccount', (req, res, next) => {
 });
 
 server.get('/api/verifyaccount', (req, res, next) => {
-	const accountDetails = req.body;
-	accountManagement.getAccountByUsername(accountDetails.username).then(data => {
+	let data;
+	try {
+		data = JSON.parse(req.body);
+	} catch (err) {
+		data = req.body;
+	}
+	const { username, password } = data;
+
+	if (!username || !password) {
+		res.send(200, { message: 'One or more fields are missing' });
+		return next();
+	}
+	accountManagement.getAccountByUsername(username).then(data => {
 		if (data.count < 1) {
 			res.send(200, { message: 'Account does not exists' });
 			return next();
 		}
-		bcrypt.compare(accountDetails.password, data[0].password).then(match => {
+		bcrypt.compare(password, data[0].password).then(match => {
 			if (match) {
-				res.send(200, { message: 'Account authenticated' });
+				const toSend = {
+					uuid: data[0].uuid,
+					username: data[0].username
+				};
+				res.send(200, toSend);
 				return next();
 			}
-			res.send(200, { message: 'Invalid Password' });
+			res.send(200, { message: 'Invalid Credentials' });
 			return next();
 		}).catch(err => {
 			server.logger.error('[server - /api/verifyaccount: 2]\n', err);
 			return next(errors.internalServerError());
 		});
 	}).catch(err => {
-		server.logger.info('[server - /api/verifyaccount: 1]\n', err);
+		server.logger.error('[server - /api/verifyaccount: 1]\n', err);
 		return next(errors.internalServerError());
 	});
 });
 
 server.put('/api/updatekeywords', (req, res, next) => {
-	const { moduleCode, keywords } = req.body;
+	let data;
+	try {
+		data = JSON.parse(req.body);
+	} catch (err) {
+		data = req.body;
+	}
+	const { moduleCode, keywords } = data;
 	if (!moduleCode || !keywords) {
 		res.send(200, { message: 'One or more fields are missing' });
 		return next();
@@ -140,7 +162,18 @@ server.post('/api/addfaq', (req, res, next) => {
 });
 
 server.get('/api/getfaq', (req, res, next) => {
-	const { moduleCode } = req.body;
+	let data;
+	try {
+		data = JSON.parse(req.body);
+	} catch (err) {
+		data = req.body;
+	}
+	const { moduleCode } = data;
+	if (!moduleCode) {
+		res.send(200, { message: 'One or more fields are missing' });
+		return next();
+	}
+
 	faqManagement.getFaqByModuleCodeAndPopulate(moduleCode).then(data => {
 		if (!data) {
 			res.send(200, { message: 'No data found' });

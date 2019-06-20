@@ -16,15 +16,15 @@ const databaseManager = {
 		});
 
 		accountSchema = new Schema({
-			id: {
-				type: Number,
-				validate: v => v > 0,
+			uuid: {
+				type: String,
+				required: true,
 				hashKey: true
 			},
 			username: {
 				type: String,
 				required: true,
-				rangeKey: true
+				index: { global: true }
 			},
 			password: {
 				type: String,
@@ -100,7 +100,8 @@ const databaseManager = {
 		return accountDetail.save();
 	},
 	getTotalIndex: () => AccountModel.scan().exec(),
-	getAccountByUsername: inputUsername => AccountModel.scan({ username: inputUsername }).exec(),
+	getAccountByUUID: inputUUID => AccountModel.get(inputUUID),
+	getAccountByUsername: inputUsername => AccountModel.query('username').eq(inputUsername).exec(),
 	getFaqByModuleCode: inputModuleCode => FaqModel.scan({ moduleCode: inputModuleCode }).exec(),
 	getFaqs: () => FaqModel.scan().exec(),
 	removeFaqByIndex: id => FaqModel.delete(id),
