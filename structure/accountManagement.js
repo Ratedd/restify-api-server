@@ -13,7 +13,8 @@ const accountManagement = {
 		const postHashed = {
 			uuid: uuid(),
 			username: data.username,
-			password: hashed
+			password: hashed,
+			isAdmin: false
 		};
 
 		const uuidExist = await db.getAccountByUUID(postHashed.uuid).catch(err => logger.error(err));

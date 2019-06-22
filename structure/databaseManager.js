@@ -8,6 +8,10 @@ let keywordSchema = {};
 let KeywordModel;
 let subscriberSchema = {};
 let SubscriberModel;
+let eventSchema = {};
+let EventModel;
+let workshopSchema = {};
+let WorkshopModel;
 
 const databaseManager = {
 	initialize: () => {
@@ -28,6 +32,10 @@ const databaseManager = {
 			},
 			password: {
 				type: String,
+				required: true
+			},
+			isAdmin: {
+				type: Boolean,
 				required: true
 			}
 		});
@@ -78,10 +86,46 @@ const databaseManager = {
 			}
 		});
 
+		eventSchema = new Schema({
+			id: {
+				type: String,
+				required: true,
+				hashKey: true
+			},
+			eventName: {
+				type: String,
+				required: true,
+				index: { global: true }
+			},
+			description: {
+				type: String,
+				required: true
+			}
+		});
+
+		workshopSchema = new Schema({
+			id: {
+				type: String,
+				required: true,
+				hashKey: true
+			},
+			workshopName: {
+				type: String,
+				required: true,
+				index: { global: true }
+			},
+			description: {
+				type: String,
+				required: true
+			}
+		});
+
 		FaqModel = dynamoose.model('faqs', faqSchema);
 		AccountModel = dynamoose.model('accounts', accountSchema);
 		KeywordModel = dynamoose.model('keywords', keywordSchema);
 		SubscriberModel = dynamoose.model('subscribers', subscriberSchema);
+		EventModel = dynamoose.model('events', eventSchema);
+		WorkshopModel = dynamoose.model('workshops', workshopSchema);
 	},
 	addFaq: data => {
 		const faqDetail = new FaqModel({

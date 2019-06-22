@@ -82,7 +82,8 @@ server.get('/api/verifyaccount', (req, res, next) => {
 			if (match) {
 				const toSend = {
 					uuid: data[0].uuid,
-					username: data[0].username
+					username: data[0].username,
+					isAdmin: data[0].isAdmin
 				};
 				res.send(200, toSend);
 				return next();
