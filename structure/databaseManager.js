@@ -183,7 +183,9 @@ const databaseManager = {
 			.catch(err => {
 				reject(err);
 			});
-	})
+	}),
+	getEvents: () => EventModel.scan().exec(),
+	getWorkshops: () => WorkshopModel.scan().exec()
 };
 
 module.exports = databaseManager;

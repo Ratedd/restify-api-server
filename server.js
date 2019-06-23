@@ -7,6 +7,8 @@ const accountManagement = require('./structure/accountManagement.js');
 const faqManagement = require('./structure/faqManagement.js');
 const keywordManagement = require('./structure/keywordManagement.js');
 const subscriberManagement = require('./structure/subscriberManagement.js');
+const eventManagement = require('./structure/eventManagement.js');
+const workshopManagement = require('./structure/workshopManagement.js');
 const errors = require('./util/error.js');
 
 const server = restify.createServer({
@@ -295,6 +297,28 @@ server.get('/api/getsubscriberbyid', (req, res, next) => {
 		return next();
 	}).catch(err => {
 		server.logger.error('[server - /api/getsubscriberbyid]\n', err);
+		return next(errors.internalServerError());
+	});
+});
+
+server.get('/api/events', (req, res, next) => {
+	eventManagement.getEvents().then(data => {
+		server.logger.info('[server - /api/events]\n', data);
+		res.send(200, data);
+		return next();
+	}).catch(err => {
+		server.logger.error('[server - /api/events]\n', err);
+		return next(errors.internalServerError());
+	});
+});
+
+server.get('/api/workshops', (req, res, next) => {
+	workshopManagement.getWorkshops().then(data => {
+		server.logger.info('[server - /api/workshops]\n', data);
+		res.send(200, data);
+		return next();
+	}).catch(err => {
+		server.logger.error('[server - /api/workshops]\n', err);
 		return next(errors.internalServerError());
 	});
 });
