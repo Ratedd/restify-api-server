@@ -312,6 +312,28 @@ server.get('/api/events', (req, res, next) => {
 	});
 });
 
+server.post('/api/addevent', (req, res, next) => {
+	let data;
+	try {
+		data = JSON.parse(req.body);
+	} catch (err) {
+		data = req.body;
+	}
+	const { eventName, eventDescription, eventThumbnail } = data;
+	if (!eventName || !eventDescription || !eventThumbnail) {
+		res.send(200, { message: 'One or more fields are missing' });
+		return next();
+	}
+	eventManagement.addEvent(data).then(event => {
+		server.logger.info('[server - /api/addevent]\n', event);
+		res.send(200, event);
+		return next();
+	}).catch(err => {
+		server.logger.error('[server - /api/addevent]\n', err);
+		return next(errors.internalServerError());
+	});
+});
+
 server.get('/api/workshops', (req, res, next) => {
 	workshopManagement.getWorkshops().then(data => {
 		server.logger.info('[server - /api/workshops]\n', data);
@@ -319,6 +341,28 @@ server.get('/api/workshops', (req, res, next) => {
 		return next();
 	}).catch(err => {
 		server.logger.error('[server - /api/workshops]\n', err);
+		return next(errors.internalServerError());
+	});
+});
+
+server.post('/api/addworkshop', (req, res, next) => {
+	let data;
+	try {
+		data = JSON.parse(req.body);
+	} catch (err) {
+		data = req.body;
+	}
+	const { workshopName, workshopDescription, workshopThumbnail } = data;
+	if (!workshopName || !workshopDescription || !workshopThumbnail) {
+		res.send(200, { message: 'One or more fields are missing' });
+		return next();
+	}
+	workshopManagement.addWorkshop(data).then(workshop => {
+		server.logger.info('[server - /api/addworkshop]\n', workshop);
+		res.send(200, workshop);
+		return next();
+	}).catch(err => {
+		server.logger.error('[server - /api/addworkshop]\n', err);
 		return next(errors.internalServerError());
 	});
 });

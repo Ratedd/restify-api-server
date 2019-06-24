@@ -184,7 +184,17 @@ const databaseManager = {
 				reject(err);
 			});
 	}),
+	addEvent: data => {
+		const eventDetails = new EventModel(data);
+
+		return eventDetails.save();
+	},
 	getEvents: () => EventModel.scan().exec(),
+	addWorkshop: data => {
+		const workshopDetails = new WorkshopModel(data);
+
+		return workshopDetails.save();
+	},
 	getWorkshops: () => WorkshopModel.scan().exec()
 };
 
