@@ -15,6 +15,9 @@ const workshopManagement = {
 	getWorkshops: () => new Promise((resolve, reject) => {
 		db.getWorkshops().then(data => {
 			logger.info('[workshopManagement - getWorkshops()]\n', data);
+			if (data.count <= 0) {
+				resolve();
+			}
 			resolve(data);
 		}).catch(err => {
 			logger.error('[workshopManagement - getWorkshops()]\n', err);
