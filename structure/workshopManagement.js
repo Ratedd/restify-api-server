@@ -23,6 +23,15 @@ const workshopManagement = {
 			logger.error('[workshopManagement - getWorkshops()]\n', err);
 			reject(err);
 		});
+	}),
+	getWorkshopByUUID: uuid => new Promise((resolve, reject) => {
+		db.getWorkshopByUUID(uuid).then(data => {
+			logger.info('[workshopManagement - getWorkshopByUUID(uuid)]\n', data);
+			resolve(data);
+		}).catch(err => {
+			logger.error('[workshopManagement - getWorkshopByUUID(uuid)]\n', err);
+			reject(err);
+		});
 	})
 };
 

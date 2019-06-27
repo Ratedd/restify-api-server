@@ -345,6 +345,18 @@ server.get('/api/workshops', (req, res, next) => {
 	});
 });
 
+server.get('/api/workshop/:id', (req, res, next) => {
+	const uuid = req.params('id');
+	workshopManagement.getWorkshopByUUID(uuid).then(data => {
+		server.logger.info('[server - /api/workshops]\n', data);
+		res.send(200, data);
+		return next();
+	}).catch(err => {
+		server.logger.error('[server - /api/workshops]\n', err);
+		return next(errors.internalServerError());
+	});
+});
+
 server.post('/api/addworkshop', (req, res, next) => {
 	let data;
 	try {

@@ -117,6 +117,9 @@ const databaseManager = {
 			description: {
 				type: String,
 				required: true
+			},
+			workshopThumbnail: {
+				type: String
 			}
 		});
 
@@ -195,7 +198,8 @@ const databaseManager = {
 
 		return workshopDetails.save();
 	},
-	getWorkshops: () => WorkshopModel.scan().exec()
+	getWorkshops: () => WorkshopModel.scan().exec(),
+	getWorkshopByUUID: uuid => WorkshopModel.get(uuid)
 };
 
 module.exports = databaseManager;
