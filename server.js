@@ -75,17 +75,17 @@ server.get('/api/verifyaccount', (req, res, next) => {
 		res.send(200, { message: 'One or more fields are missing' });
 		return next();
 	}
-	accountManagement.getAccountByUsername(username).then(data => {
-		if (data.count < 1) {
+	accountManagement.getAccountByUsername(username).then(account => {
+		if (account.count < 1) {
 			res.send(200, { message: 'Account does not exists' });
 			return next();
 		}
 		bcrypt.compare(password, data[0].password).then(match => {
 			if (match) {
 				const toSend = {
-					uuid: data[0].uuid,
-					username: data[0].username,
-					isAdmin: data[0].isAdmin
+					uuid: account[0].uuid,
+					username: account[0].username,
+					isAdmin: account[0].isAdmin
 				};
 				res.send(200, toSend);
 				return next();
@@ -116,13 +116,13 @@ server.put('/api/updatekeywords', (req, res, next) => {
 	}
 	const splitted = keywords.split(';');
 	const trimmed = _.map(splitted, _.trim);
-	keywordManagement.updateKeywords(moduleCode, trimmed).then(data => {
-		if (!data) {
+	keywordManagement.updateKeywords(moduleCode, trimmed).then(updated => {
+		if (!updated) {
 			res.send(200, { message: 'There\'s no data to update' });
 			return next();
 		}
-		server.logger.info('[server - /api/updatekeywords]\n', data);
-		res.send(200, data);
+		server.logger.info('[server - /api/updatekeywords]\n', updated);
+		res.send(200, updated);
 		return next();
 	}).catch(err => {
 		server.logger.error('[server - /api/updatekeywords]\n', err);
@@ -177,13 +177,13 @@ server.get('/api/getfaq', (req, res, next) => {
 		return next();
 	}
 
-	faqManagement.getFaqByModuleCodeAndPopulate(moduleCode).then(data => {
-		if (!data) {
+	faqManagement.getFaqByModuleCodeAndPopulate(moduleCode).then(faq => {
+		if (!faq) {
 			res.send(200, { message: 'No data found' });
 			return next();
 		}
-		server.logger.info('[server - /api/getfaq]\n', data);
-		res.send(200, data);
+		server.logger.info('[server - /api/getfaq]\n', faq);
+		res.send(200, faq);
 		return next();
 	}).catch(err => {
 		server.logger.error('[server - /api/getfaq]\n', err);
