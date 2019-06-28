@@ -10,7 +10,7 @@ const workshopManagement = {
 		const preData = {
 			uuid: uuid(),
 			workshopName: workshopData.workshopName,
-			workshopDescription: workshopData.workshopDesc,
+			description: workshopData.description,
 			workshopThumbnail: workshopData.workshopThumbnail,
 			workshopDate: workshopData.workshopDate
 		};
