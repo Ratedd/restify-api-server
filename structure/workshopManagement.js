@@ -1,10 +1,36 @@
 const bridge = require('./bridge.js');
 const db = bridge.getDB();
 const logger = require('../util/logger.js');
+const uuid = require('uuid/v4');
 
 const workshopManagement = {
-	addWorkshop: workshopData => new Promise((resolve, reject) => {
-		db.addWorkshop(workshopData).then(data => {
+	addWorkshop: workshopData => new Promise(async (resolve, reject) => {
+		let uuidUsed = false;
+		let newUUID;
+		const preData = {
+			uuid: uuid(),
+			workshopName: workshopData.workshopName,
+			workshopDescription: workshopData.workshopDesc,
+			workshopThumbnail: workshopData.workshopThumbnail,
+			workshopDate: workshopData.workshopDate
+		};
+
+		const uuidExist = await db.getWorkshopByUUID(preData.uuid).catch(err => logger.error(err));
+
+		if (uuidExist) {
+			uuidUsed = true;
+		}
+
+		while (uuidUsed) {
+			newUUID = uuid();
+			const dataUUID = await db.getAccountByUUID(newUUID).catch(err => logger.error(err));
+
+			if (dataUUID) continue;
+			uuidUsed = false;
+			preData.uuid = newUUID;
+		}
+
+		db.addWorkshop(preData).then(data => {
 			logger.info('[workshopManagement - addWorkshop(workshopData)]\n', data);
 			resolve(data);
 		}).catch(err => {

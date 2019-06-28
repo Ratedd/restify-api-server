@@ -87,7 +87,7 @@ const databaseManager = {
 		});
 
 		eventSchema = new Schema({
-			id: {
+			uuid: {
 				type: String,
 				required: true,
 				hashKey: true
@@ -100,11 +100,17 @@ const databaseManager = {
 			description: {
 				type: String,
 				required: true
+			},
+			eventThumbnail: {
+				type: String
+			},
+			eventDate: {
+				type: String
 			}
 		});
 
 		workshopSchema = new Schema({
-			id: {
+			uuid: {
 				type: String,
 				required: true,
 				hashKey: true
@@ -119,6 +125,9 @@ const databaseManager = {
 				required: true
 			},
 			workshopThumbnail: {
+				type: String
+			},
+			workshopDate: {
 				type: String
 			}
 		});
