@@ -364,8 +364,8 @@ server.post('/api/addworkshop', (req, res, next) => {
 	} catch (err) {
 		data = req.body;
 	}
-	const { workshopName, workshopDescription, workshopThumbnail } = data;
-	if (!workshopName || !workshopDescription || !workshopThumbnail) {
+	const { workshopName, workshopDescription } = data;
+	if (!workshopName || !workshopDescription) {
 		res.send(200, { message: 'One or more fields are missing' });
 		return next();
 	}
