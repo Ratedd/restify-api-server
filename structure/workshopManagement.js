@@ -50,8 +50,8 @@ const workshopManagement = {
 			reject(err);
 		});
 	}),
-	getWorkshopByUUID: uuid => new Promise((resolve, reject) => {
-		db.getWorkshopByUUID(uuid).then(data => {
+	getWorkshopByUUID: workshopUUID => new Promise((resolve, reject) => {
+		db.getWorkshopByUUID(workshopUUID).then(data => {
 			logger.info('[workshopManagement - getWorkshopByUUID(uuid)]\n', data);
 			resolve(data);
 		}).catch(err => {

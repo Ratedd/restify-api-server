@@ -202,6 +202,7 @@ const databaseManager = {
 		return eventDetails.save();
 	},
 	getEvents: () => EventModel.scan().exec(),
+	getEventByUUID: uuid => EventModel.get(uuid),
 	addWorkshop: data => {
 		const workshopDetails = new WorkshopModel(data);
 
