@@ -34,8 +34,7 @@ server.post('/api/addaccount', (req, res, next) => {
 	const { username, password } = data;
 
 	if (!username || !password) {
-		res.send(200, { message: 'One or more fields are missing' });
-		return next();
+		return next(errors.fieldError());
 	}
 
 	accountManagement.getAccountByUsername(username).then(account => {
@@ -52,13 +51,11 @@ server.post('/api/addaccount', (req, res, next) => {
 			return next();
 		}).catch(err => {
 			server.logger.error('[server - /api/addaccount: 1 ]\n', err);
-			res.send(500, { message: 'Internal Server Error' });
-			return next();
+			return next(errors.internalServerError());
 		});
 	}).catch(err => {
 		server.logger.error('[server - /api/addaccount: 2]\n', err);
-		res.send(500, { message: 'Internal Server Error' });
-		return next();
+		return next(errors.internalServerError());
 	});
 });
 
@@ -72,15 +69,14 @@ server.get('/api/verifyaccount', (req, res, next) => {
 	const { username, password } = data;
 
 	if (!username || !password) {
-		res.send(200, { message: 'One or more fields are missing' });
-		return next();
+		return next(errors.fieldError());
 	}
 	accountManagement.getAccountByUsername(username).then(account => {
 		if (account.count < 1) {
-			res.send(200, { message: 'Account does not exists' });
+			res.send(200, { message: 'Account does not exist' });
 			return next();
 		}
-		bcrypt.compare(password, data[0].password).then(match => {
+		bcrypt.compare(password, account[0].password).then(match => {
 			if (match) {
 				const toSend = {
 					uuid: account[0].uuid,
@@ -111,8 +107,7 @@ server.put('/api/updatekeywords', (req, res, next) => {
 	}
 	const { moduleCode, keywords } = data;
 	if (!moduleCode || !keywords) {
-		res.send(200, { message: 'One or more fields are missing' });
-		return next();
+		return next(errors.fieldError());
 	}
 	const splitted = keywords.split(';');
 	const trimmed = _.map(splitted, _.trim);
@@ -139,8 +134,7 @@ server.post('/api/addfaq', (req, res, next) => {
 	}
 	const { moduleCode, questions, answers, keywords } = data;
 	if (!moduleCode || !questions || !keywords || !answers) {
-		res.send(200, { message: 'One or more fields are missing' });
-		return next();
+		return next(errors.fieldError());
 	}
 
 	const splittedQuestions = questions.split(';');
@@ -173,8 +167,7 @@ server.get('/api/getfaq', (req, res, next) => {
 	}
 	const { moduleCode } = data;
 	if (!moduleCode) {
-		res.send(200, { message: 'One or more fields are missing' });
-		return next();
+		return next(errors.fieldError());
 	}
 
 	faqManagement.getFaqByModuleCodeAndPopulate(moduleCode).then(faq => {
@@ -199,8 +192,7 @@ server.post('/api/addsubscriber', (req, res, next) => {
 		data = req.body;
 	}
 	if (!data) {
-		res.send(200, { message: 'One or more fields are missing' });
-		return next();
+		return next(errors.fieldError());
 	}
 	subscriberManagement.addSubscriber(data).then(subscriber => {
 		if (!subscriber) {
@@ -225,8 +217,7 @@ server.del('/api/removesubscriber', (req, res, next) => {
 	}
 	const { id } = data;
 	if (!id) {
-		res.send(200, { message: 'One or more fields are missing' });
-		return next();
+		return next(errors.fieldError());
 	}
 	subscriberManagement.removeSubscriber(id).then(subscriber => {
 		if (!subscriber) {
@@ -244,8 +235,7 @@ server.del('/api/removesubscriber', (req, res, next) => {
 server.get('/api/searchfaqbykeywords', (req, res, next) => {
 	const { keywords } = req.body;
 	if (!keywords) {
-		res.send(200, { message: 'One or more fields are missing' });
-		return next();
+		return next(errors.fieldError());
 	}
 	const splitted = keywords.split(',');
 	const trimmed = _.map(splitted, _.trim);
@@ -284,8 +274,7 @@ server.get('/api/getsubscribers', (req, res, next) => {
 server.get('/api/getsubscriberbyid', (req, res, next) => {
 	const { id } = req.body;
 	if (!id) {
-		res.send(200, { message: 'One or more fields are missing' });
-		return next();
+		return next(errors.fieldError());
 	}
 	subscriberManagement.getSubscriberById(id).then(data => {
 		if (!data) {
@@ -321,8 +310,7 @@ server.post('/api/addevent', (req, res, next) => {
 	}
 	const { eventName, eventDescription, eventThumbnail } = data;
 	if (!eventName || !eventDescription || !eventThumbnail) {
-		res.send(200, { message: 'One or more fields are missing' });
-		return next();
+		return next(errors.fieldError());
 	}
 	eventManagement.addEvent(data).then(event => {
 		server.logger.info('[server - /api/addevent]\n', event);
@@ -366,8 +354,7 @@ server.post('/api/addworkshop', (req, res, next) => {
 	}
 	const { workshopName, description } = data;
 	if (!workshopName || !description) {
-		res.send(200, { message: 'One or more fields are missing' });
-		return next();
+		return next(errors.fieldError());
 	}
 	workshopManagement.addWorkshop(data).then(workshop => {
 		server.logger.info('[server - /api/addworkshop]\n', workshop);
