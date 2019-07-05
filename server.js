@@ -384,6 +384,10 @@ server.post('/api/addworkshopattendance', (req, res, next) => {
 		return next();
 	}).catch(err => {
 		server.logger.error('[server - /api/addworkshopattendance]\n', err);
+		if (err.statusCode === 400) {
+			return next(errors.alreadyRegisteredError());
+		}
+		server.logger.error('[server - /api/addworkshopattendance]\n', err);
 		return next(errors.internalServerError());
 	});
 });
