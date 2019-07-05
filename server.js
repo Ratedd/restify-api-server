@@ -353,8 +353,8 @@ server.post('/api/addworkshop', (req, res, next) => {
 	} catch (err) {
 		data = req.body;
 	}
-	const { workshopName, description } = data;
-	if (!workshopName || !description) {
+	const { workshopName, description, workshopDate } = data;
+	if (!workshopName || !description || !workshopDate) {
 		return next(errors.fieldError());
 	}
 	workshopManagement.addWorkshop(data).then(workshop => {
