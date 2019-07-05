@@ -9,6 +9,7 @@ const keywordManagement = require('./structure/keywordManagement.js');
 const subscriberManagement = require('./structure/subscriberManagement.js');
 const eventManagement = require('./structure/eventManagement.js');
 const workshopManagement = require('./structure/workshopManagement.js');
+const attendanceManagement = require('./structure/attendanceManagement.js');
 const errors = require('./util/error.js');
 
 const server = restify.createServer({
@@ -362,6 +363,27 @@ server.post('/api/addworkshop', (req, res, next) => {
 		return next();
 	}).catch(err => {
 		server.logger.error('[server - /api/addworkshop]\n', err);
+		return next(errors.internalServerError());
+	});
+});
+
+server.post('/api/addworkshopattendance', (req, res, next) => {
+	let data;
+	try {
+		data = JSON.parse(req.body);
+	} catch (err) {
+		data = req.body;
+	}
+	const { uuid, details } = data;
+	if (!uuid || !details) {
+		return next(errors.fieldError());
+	}
+	attendanceManagement.addAttendance(data).then(done => {
+		server.logger.info('[server - /api/addworkshopattendance]\n', done);
+		res.send(200, { message: 'Successfully Added' });
+		return next();
+	}).catch(err => {
+		server.logger.error('[server - /api/addworkshopattendance]\n', err);
 		return next(errors.internalServerError());
 	});
 });

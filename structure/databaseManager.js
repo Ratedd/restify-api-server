@@ -12,6 +12,8 @@ let eventSchema = {};
 let EventModel;
 let workshopSchema = {};
 let WorkshopModel;
+let workshopAttendanceSchema = {};
+let WorkshopAttendanceModel;
 
 const databaseManager = {
 	initialize: () => {
@@ -132,12 +134,25 @@ const databaseManager = {
 			}
 		});
 
+		workshopAttendanceSchema = new Schema({
+			uuid: {
+				type: String,
+				required: true,
+				hashKey: true
+			},
+			attendees: {
+				type: [Array],
+				required: true
+			}
+		});
+
 		FaqModel = dynamoose.model('faqs', faqSchema);
 		AccountModel = dynamoose.model('accounts', accountSchema);
 		KeywordModel = dynamoose.model('keywords', keywordSchema);
 		SubscriberModel = dynamoose.model('subscribers', subscriberSchema);
 		EventModel = dynamoose.model('events', eventSchema);
 		WorkshopModel = dynamoose.model('workshops', workshopSchema);
+		WorkshopAttendanceModel = dynamoose.model('workshopAttendees', workshopAttendanceSchema);
 	},
 	addFaq: data => {
 		const faqDetail = new FaqModel({
@@ -209,7 +224,13 @@ const databaseManager = {
 		return workshopDetails.save();
 	},
 	getWorkshops: () => WorkshopModel.scan().exec(),
-	getWorkshopByUUID: uuid => WorkshopModel.get(uuid)
+	getWorkshopByUUID: uuid => WorkshopModel.get(uuid),
+	addWorkshopAttendance: data => {
+		const details = new WorkshopAttendanceModel(data);
+		return details.save();
+	},
+	updateWorkshopAttendance: (wuuid, details) => WorkshopAttendanceModel.update({ uuid: wuuid, attendees: details }),
+	getWorkshopAttendance: uuid => WorkshopAttendanceModel.get(uuid)
 };
 
 module.exports = databaseManager;
