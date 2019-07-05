@@ -41,6 +41,9 @@ const eventManagement = {
 	getEvents: () => new Promise((resolve, reject) => {
 		db.getEvents().then(data => {
 			logger.info('[eventManagement - getEvents()]\n', data);
+			if (data.count <= 0) {
+				resolve();
+			}
 			resolve(data);
 		}).catch(err => {
 			logger.error('[eventManagement - getEvents()]\n', err);

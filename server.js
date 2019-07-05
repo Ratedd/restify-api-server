@@ -294,6 +294,10 @@ server.get('/api/getsubscriberbyid', (req, res, next) => {
 server.get('/api/events', (req, res, next) => {
 	eventManagement.getEvents().then(data => {
 		server.logger.info('[server - /api/events]\n', data);
+		if (!data) {
+			res.send(200, { message: 'No data found' });
+			return next();
+		}
 		res.send(200, data);
 		return next();
 	}).catch(err => {
@@ -325,6 +329,10 @@ server.post('/api/addevent', (req, res, next) => {
 
 server.get('/api/workshops', (req, res, next) => {
 	workshopManagement.getWorkshops().then(data => {
+		if (!data) {
+			res.send(200, { message: 'No data found' });
+			return next();
+		}
 		server.logger.info('[server - /api/workshops]\n', data);
 		res.send(200, data);
 		return next();
