@@ -34,6 +34,15 @@ const attendanceManagement = {
 			logger.error('[attendanceManagement - addAttendance(data)]\n', err);
 			reject(err);
 		});
+	}),
+	getWorkshopAttendanceByUUID: uuid => new Promise((resolve, reject) => {
+		db.getWorkshopAttendance(uuid).then(data => {
+			logger.info('[attendanceManagement - getWorkshopAttendanceByUUID(uuid)]\n', data);
+			resolve(data);
+		}).catch(err => {
+			logger.error('[attendanceManagement - getWorkshopAttendanceByUUID(uuid)]\n', err);
+			reject(err);
+		});
 	})
 };
 

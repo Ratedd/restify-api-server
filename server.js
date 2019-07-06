@@ -400,6 +400,28 @@ server.post('/api/addworkshopattendance', (req, res, next) => {
 	});
 });
 
+server.get('/api/getworkshopattendance', (req, res, next) => {
+	let data;
+	try {
+		data = JSON.parse(req.body);
+	} catch (err) {
+		data = req.body;
+	}
+
+	const { uuid } = data;
+	if (!uuid) {
+		return next(errors.fieldError());
+	}
+	attendanceManagement.getWorkshopAttendanceByUUID(uuid).then(data => {
+		server.logger.info('[server - /api/getworkshopattendance]\n', data);
+		res.send(200, data);
+		return next();
+	}).catch(err => {
+		server.logger.error('[server - /api/getworkshopattendance]\n', err);
+		return next(errors.internalServerError());
+	});
+});
+
 server.listen(3000, () => {
 	bridge.initializeDB();
 	server.logger.info(`${server.name} listening at ${server.url}`);
