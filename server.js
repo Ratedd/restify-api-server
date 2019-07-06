@@ -400,14 +400,13 @@ server.post('/api/addworkshopattendance', (req, res, next) => {
 	});
 });
 
-server.get('/api/getworkshopattendance', (req, res, next) => {
+server.post('/api/getworkshopattendance', (req, res, next) => {
 	let data;
 	try {
 		data = JSON.parse(req.body);
 	} catch (err) {
 		data = req.body;
 	}
-
 	const { uuid } = data;
 	if (!uuid) {
 		return next(errors.fieldError());
