@@ -327,6 +327,18 @@ server.post('/api/addevent', (req, res, next) => {
 	});
 });
 
+server.get('/api/event/:id', (req, res, next) => {
+	const { id } = req.params;
+	eventManagement.getEventByUUID(id).then(data => {
+		server.logger.info('[server - /api/event/:id]\n', data);
+		res.send(200, { data });
+		return next();
+	}).catch(err => {
+		server.logger.error('[server - /api/event/:id]\n', err);
+		return next(errors.internalServerError());
+	});
+});
+
 server.get('/api/workshops', (req, res, next) => {
 	workshopManagement.getWorkshops().then(data => {
 		if (!data) {
@@ -345,11 +357,11 @@ server.get('/api/workshops', (req, res, next) => {
 server.get('/api/workshop/:id', (req, res, next) => {
 	const { id } = req.params;
 	workshopManagement.getWorkshopByUUID(id).then(data => {
-		server.logger.info('[server - /api/workshops]\n', data);
+		server.logger.info('[server - /api/workshop/:id]\n', data);
 		res.send(200, { data });
 		return next();
 	}).catch(err => {
-		server.logger.error('[server - /api/workshops]\n', err);
+		server.logger.error('[server - /api/workshop/:id]\n', err);
 		return next(errors.internalServerError());
 	});
 });
@@ -386,7 +398,7 @@ server.post('/api/addworkshopattendance', (req, res, next) => {
 	if (!uuid || !details) {
 		return next(errors.fieldError());
 	}
-	attendanceManagement.addAttendance(data).then(done => {
+	attendanceManagement.addWorkshopAttendance(data).then(done => {
 		server.logger.info('[server - /api/addworkshopattendance]\n', done);
 		res.send(200, { message: 'Successfully Added' });
 		return next();
@@ -417,6 +429,52 @@ server.post('/api/getworkshopattendance', (req, res, next) => {
 		return next();
 	}).catch(err => {
 		server.logger.error('[server - /api/getworkshopattendance]\n', err);
+		return next(errors.internalServerError());
+	});
+});
+
+server.post('/api/addeventattendance', (req, res, next) => {
+	let data;
+	try {
+		data = JSON.parse(req.body);
+	} catch (err) {
+		data = req.body;
+	}
+	const { uuid, details } = data;
+	if (!uuid || !details) {
+		return next(errors.fieldError());
+	}
+	attendanceManagement.addEventAttendance(data).then(done => {
+		server.logger.info('[server - /api/addeventattendance]\n', done);
+		res.send(200, { message: 'Successfully Added' });
+		return next();
+	}).catch(err => {
+		server.logger.error('[server - /api/addeventattendance]\n', err);
+		if (err.statusCode === 400) {
+			return next(errors.alreadyRegisteredError());
+		}
+		server.logger.error('[server - /api/addeventattendance]\n', err);
+		return next(errors.internalServerError());
+	});
+});
+
+server.post('/api/geteventattendance', (req, res, next) => {
+	let data;
+	try {
+		data = JSON.parse(req.body);
+	} catch (err) {
+		data = req.body;
+	}
+	const { uuid } = data;
+	if (!uuid) {
+		return next(errors.fieldError());
+	}
+	attendanceManagement.getEventAttendanceByUUID(uuid).then(data => {
+		server.logger.info('[server - /api/geteventattendance]\n', data);
+		res.send(200, data);
+		return next();
+	}).catch(err => {
+		server.logger.error('[server - /api/geteventattendance]\n', err);
 		return next(errors.internalServerError());
 	});
 });
