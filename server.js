@@ -313,8 +313,8 @@ server.post('/api/addevent', (req, res, next) => {
 	} catch (err) {
 		data = req.body;
 	}
-	const { eventName, eventDescription, eventThumbnail } = data;
-	if (!eventName || !eventDescription || !eventThumbnail) {
+	const { eventName, description, eventDate } = data;
+	if (!eventName || !description || !eventDate) {
 		return next(errors.fieldError());
 	}
 	eventManagement.addEvent(data).then(event => {
