@@ -98,8 +98,7 @@ const databaseManager = {
 			},
 			eventName: {
 				type: String,
-				required: true,
-				index: { global: true }
+				required: true
 			},
 			description: {
 				type: String,
@@ -110,6 +109,11 @@ const databaseManager = {
 			},
 			eventDate: {
 				type: String
+			},
+			addedByAdmin: {
+				type: String,
+				required: true,
+				index: { global: true }
 			}
 		});
 
@@ -121,8 +125,7 @@ const databaseManager = {
 			},
 			workshopName: {
 				type: String,
-				required: true,
-				index: { global: true }
+				required: true
 			},
 			description: {
 				type: String,
@@ -133,6 +136,11 @@ const databaseManager = {
 			},
 			workshopDate: {
 				type: String
+			},
+			addedByAdmin: {
+				type: String,
+				required: true,
+				index: { global: true }
 			}
 		});
 

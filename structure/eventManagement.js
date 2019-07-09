@@ -4,15 +4,16 @@ const logger = require('../util/logger.js');
 const uuid = require('uuid/v4');
 
 const eventManagement = {
-	addEvent: eventDate => new Promise(async (resolve, reject) => {
+	addEvent: eventData => new Promise(async (resolve, reject) => {
 		let uuidUsed = false;
 		let newUUID;
 		const preData = {
 			uuid: uuid(),
-			eventName: eventDate.workshopName,
-			description: eventDate.description,
-			eventThumbnail: eventDate.eventThumbnail,
-			eventDate: eventDate.eventDate
+			eventName: eventData.workshopName,
+			description: eventData.description,
+			eventThumbnail: eventData.eventThumbnail,
+			eventDate: eventData.eventDate,
+			addedByAdmin: eventData.addedByAdmin
 		};
 
 		const uuidExist = await db.getEventByUUID(preData.uuid).catch(err => logger.error(err));

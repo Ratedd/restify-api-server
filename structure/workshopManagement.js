@@ -12,7 +12,8 @@ const workshopManagement = {
 			workshopName: workshopData.workshopName,
 			description: workshopData.description,
 			workshopThumbnail: workshopData.workshopThumbnail,
-			workshopDate: workshopData.workshopDate
+			workshopDate: workshopData.workshopDate,
+			addedByAdmin: workshopData.addedByAdmin
 		};
 
 		const uuidExist = await db.getWorkshopByUUID(preData.uuid).catch(err => logger.error(err));
