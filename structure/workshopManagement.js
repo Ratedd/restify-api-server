@@ -59,6 +59,15 @@ const workshopManagement = {
 			logger.error('[workshopManagement - getWorkshopByUUID(uuid)]\n', err);
 			reject(err);
 		});
+	}),
+	getWorkshopAddedByUserID: userId => new Promise((resolve, reject) => {
+		db.getWorkshopAddedByUserID(userId).then(data => {
+			logger.info('[workshopManagement - getWorkshopAddedByUserID(userId)]\n', data);
+			resolve(data);
+		}).catch(err => {
+			logger.error('[workshopManagement - getWorkshopAddedByUserID(userId)]\n', err);
+			reject(err);
+		});
 	})
 };
 

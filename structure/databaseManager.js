@@ -252,6 +252,7 @@ const databaseManager = {
 		const details = new WorkshopAttendanceModel(data);
 		return details.save();
 	},
+	getWorkshopAddedByUserID: userId => WorkshopModel.query('addedByAdmin').eq(userId).exec(),
 	updateWorkshopAttendance: (wuuid, details) => WorkshopAttendanceModel.update({ uuid: wuuid, attendees: details }),
 	getWorkshopAttendance: uuid => WorkshopAttendanceModel.get(uuid),
 	addEventAttendance: data => {

@@ -479,6 +479,21 @@ server.post('/api/geteventattendance', (req, res, next) => {
 	});
 });
 
+server.get('/api/workshops/:userId', (req, res, next) => {
+	const { userId } = req.params;
+	if (!userId) {
+		return next(errors.fieldError());
+	}
+	workshopManagement.getWorkshopAddedByUserID(userId).then(data => {
+		server.logger.info('[server - /api/workshops/:userId]\n', data);
+		res.send(200, data);
+		return next();
+	}).catch(err => {
+		server.logger.error('[server - /api/workshops/:userId]\n', err);
+		return next(errors.internalServerError());
+	});
+});
+
 server.listen(3000, () => {
 	bridge.initializeDB();
 	server.logger.info(`${server.name} listening at ${server.url}`);
