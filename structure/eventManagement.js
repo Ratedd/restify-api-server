@@ -59,6 +59,15 @@ const eventManagement = {
 			logger.error('[eventManagement - getEventByUUID(eventUUID)]\n', err);
 			reject(err);
 		});
+	}),
+	getEventAddedByUserID: userId => new Promise((resolve, reject) => {
+		db.getEventAddedByUserID(userId).then(data => {
+			logger.info('[eventManagement - getEventAddedByUserID]\n', data);
+			resolve(data);
+		}).catch(err => {
+			logger.error('[eventManagement - getEventAddedByUserID]\n', err);
+			reject(err);
+		});
 	})
 };
 

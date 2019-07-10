@@ -239,6 +239,7 @@ const databaseManager = {
 
 		return eventDetails.save();
 	},
+	getEventAddedByUserID: userId => EventModel.query('addedByAdmin').eq(userId).exec(),
 	getEvents: () => EventModel.scan().exec(),
 	getEventByUUID: uuid => EventModel.get(uuid),
 	addWorkshop: data => {

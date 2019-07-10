@@ -32,9 +32,9 @@ server.post('/api/addaccount', (req, res, next) => {
 	} catch (err) {
 		data = req.body;
 	}
-	const { username, password } = data;
+	const { username, password, name } = data;
 
-	if (!username || !password) {
+	if (!username || !password || !name) {
 		return next(errors.fieldError());
 	}
 
@@ -490,6 +490,21 @@ server.get('/api/workshops/:userId', (req, res, next) => {
 		return next();
 	}).catch(err => {
 		server.logger.error('[server - /api/workshops/:userId]\n', err);
+		return next(errors.internalServerError());
+	});
+});
+
+server.get('/api/events/:userId', (req, res, next) => {
+	const { userId } = req.params;
+	if (!userId) {
+		return next(errors.fieldError());
+	}
+	eventManagement.getEventAddedByUserID(userId).then(data => {
+		server.logger.info('[server - /api/events/:userId]\n', data);
+		res.send(200, data);
+		return next();
+	}).catch(err => {
+		server.logger.error('[server - /api/events/:userId]\n', err);
 		return next(errors.internalServerError());
 	});
 });
