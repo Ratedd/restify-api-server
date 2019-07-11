@@ -60,7 +60,7 @@ server.post('/api/addaccount', (req, res, next) => {
 	});
 });
 
-server.get('/api/verifyaccount', (req, res, next) => {
+server.post('/api/verifyaccount', (req, res, next) => {
 	let data;
 	try {
 		data = JSON.parse(req.body);
@@ -68,7 +68,6 @@ server.get('/api/verifyaccount', (req, res, next) => {
 		data = req.body;
 	}
 	const { username, password } = data;
-
 	if (!username || !password) {
 		return next(errors.fieldError());
 	}
