@@ -81,7 +81,8 @@ server.post('/api/verifyaccount', (req, res, next) => {
 				const toSend = {
 					uuid: account[0].uuid,
 					username: account[0].username,
-					isAdmin: account[0].isAdmin
+					isAdmin: account[0].isAdmin,
+					name: account[0].name
 				};
 				res.send(200, toSend);
 				return next();
