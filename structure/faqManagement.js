@@ -61,7 +61,7 @@ const faqManagement = {
 			reject(err);
 		});
 	}),
-	searchFaqByKeywords: keywords => new Promise((resolve, reject) => {
+	searchFaqByKeyword: keyword => new Promise((resolve, reject) => {
 		db.populateFaqs().then(data => {
 			if (data.length < 1) {
 				resolve();
@@ -69,15 +69,22 @@ const faqManagement = {
 			}
 			const contains = [];
 			for (let i = 0; i < data.length; i++) {
-				for (let k = 0; k < keywords.length; k++) {
-					if (!data[i].keywords.keywords.includes(_.toString(keywords[k]))) continue;
-					contains.push(data[i]);
-				}
+				if (!data[i].keywords.keywords.includes(_.toString(keyword))) continue;
+				contains.push(data[i]);
 			}
 			logger.info('[faqManagement - searchFaqByKeyword]\n', contains);
 			resolve(contains);
 		}).catch(err => {
 			logger.error('[faqManagement - searchFaqByKeyword]\n', err);
+			reject(err);
+		});
+	}),
+	test: keyword => new Promise((resolve, reject) => {
+		db.test(_.toString(keyword)).then(data => {
+			logger.info('data', data);
+			resolve(data);
+		}).catch(err => {
+			logger.error('err', err);
 			reject(err);
 		});
 	})
