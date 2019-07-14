@@ -74,7 +74,8 @@ const databaseManager = {
 				required: true
 			},
 			keywords: {
-				type: Array
+				type: Array,
+				index: { global: true }
 			}
 		});
 
@@ -201,6 +202,7 @@ const databaseManager = {
 	removeFaqByIndex: id => FaqModel.delete(id),
 	updateKeywords: (index, newArr) => KeywordModel.update({ id: index, keywords: newArr }),
 	getKeywordsById: id => KeywordModel.get(id),
+	test: keyword => KeywordModel.scan('keywords').contains(keyword).exec(),
 	addSubscriber: data => {
 		const subscriberDetail = new SubscriberModel(data);
 		return subscriberDetail.save();
