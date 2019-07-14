@@ -25,7 +25,7 @@ server.pre(restify.plugins.pre.sanitizePath());
 
 server.logger = require('./util/logger.js');
 
-server.post('/api/addaccount', (req, res, next) => {
+server.post('/api/createaccount', (req, res, next) => {
 	let data;
 	try {
 		data = JSON.parse(req.body);
@@ -43,7 +43,7 @@ server.post('/api/addaccount', (req, res, next) => {
 			res.send(200, { message: 'Account already exists' });
 			return next();
 		}
-		accountManagement.addAccount(data).then(created => {
+		accountManagement.createAccount(data).then(created => {
 			const creation = {
 				username: created.username,
 				message: 'Account created'
@@ -51,11 +51,11 @@ server.post('/api/addaccount', (req, res, next) => {
 			res.send(200, creation);
 			return next();
 		}).catch(err => {
-			server.logger.error('[server - /api/addaccount: 1 ]\n', err);
+			server.logger.error('[server - /api/createaccount: 1 ]\n', err);
 			return next(errors.internalServerError());
 		});
 	}).catch(err => {
-		server.logger.error('[server - /api/addaccount: 2]\n', err);
+		server.logger.error('[server - /api/createaccount: 2]\n', err);
 		return next(errors.internalServerError());
 	});
 });
@@ -95,33 +95,6 @@ server.post('/api/verifyaccount', (req, res, next) => {
 		});
 	}).catch(err => {
 		server.logger.error('[server - /api/verifyaccount: 1]\n', err);
-		return next(errors.internalServerError());
-	});
-});
-
-server.put('/api/updatekeywords', (req, res, next) => {
-	let data;
-	try {
-		data = JSON.parse(req.body);
-	} catch (err) {
-		data = req.body;
-	}
-	const { moduleCode, keywords } = data;
-	if (!moduleCode || !keywords) {
-		return next(errors.fieldError());
-	}
-	const splitted = keywords.split(';');
-	const trimmed = _.map(splitted, _.trim);
-	keywordManagement.updateKeywords(moduleCode, trimmed).then(updated => {
-		if (!updated) {
-			res.send(200, { message: 'There\'s no data to update' });
-			return next();
-		}
-		server.logger.info('[server - /api/updatekeywords]\n', updated);
-		res.send(200, updated);
-		return next();
-	}).catch(err => {
-		server.logger.error('[server - /api/updatekeywords]\n', err);
 		return next(errors.internalServerError());
 	});
 });
@@ -233,30 +206,6 @@ server.del('/api/removesubscriber', (req, res, next) => {
 	});
 });
 
-server.get('/api/searchfaqbykeywords', (req, res, next) => {
-	const { keywords } = req.body;
-	if (!keywords) {
-		return next(errors.fieldError());
-	}
-	const splitted = keywords.split(',');
-	const trimmed = _.map(splitted, _.trim);
-	faqManagement.searchFaqByKeywords(trimmed).then(data => {
-		if (!data) {
-			res.send(200, { message: 'No data found' });
-			return next();
-		}
-		if (data.length < 1) {
-			res.send(200, { message: `No faq found with the keyword(s): ${trimmed}`, data });
-			return next();
-		}
-		res.send(200, data);
-		return next();
-	}).catch(err => {
-		server.logger.error('[server - /api/searchfaqbykeywords]\n', err);
-		return next(errors.internalServerError());
-	});
-});
-
 server.get('/api/getsubscribers', (req, res, next) => {
 	subscriberManagement.getSubscribers().then(data => {
 		if (!data) {
@@ -287,6 +236,58 @@ server.get('/api/getsubscriberbyid', (req, res, next) => {
 		return next();
 	}).catch(err => {
 		server.logger.error('[server - /api/getsubscriberbyid]\n', err);
+		return next(errors.internalServerError());
+	});
+});
+
+
+server.post('/api/searchfaqbykeywords', (req, res, next) => {
+	const { keywords } = req.body;
+	if (!keywords) {
+		return next(errors.fieldError());
+	}
+	const splitted = keywords.split(';');
+	const trimmed = _.map(splitted, _.trim);
+	faqManagement.searchFaqByKeywords(trimmed).then(data => {
+		if (!data) {
+			res.send(200, { message: 'No data found' });
+			return next();
+		}
+		if (data.length < 1) {
+			res.send(200, { message: `No faq found with the keyword(s): ${trimmed}`, data });
+			return next();
+		}
+		res.send(200, data);
+		return next();
+	}).catch(err => {
+		server.logger.error('[server - /api/searchfaqbykeywords]\n', err);
+		return next(errors.internalServerError());
+	});
+});
+
+server.put('/api/updatekeywords', (req, res, next) => {
+	let data;
+	try {
+		data = JSON.parse(req.body);
+	} catch (err) {
+		data = req.body;
+	}
+	const { moduleCode, keywords } = data;
+	if (!moduleCode || !keywords) {
+		return next(errors.fieldError());
+	}
+	const splitted = keywords.split(';');
+	const trimmed = _.map(splitted, _.trim);
+	keywordManagement.updateKeywords(moduleCode, trimmed).then(updated => {
+		if (!updated) {
+			res.send(200, { message: 'There\'s no data to update' });
+			return next();
+		}
+		server.logger.info('[server - /api/updatekeywords]\n', updated);
+		res.send(200, updated);
+		return next();
+	}).catch(err => {
+		server.logger.error('[server - /api/updatekeywords]\n', err);
 		return next(errors.internalServerError());
 	});
 });

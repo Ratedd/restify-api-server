@@ -6,7 +6,7 @@ const logger = require('../util/logger.js');
 const uuid = require('uuid/v4');
 
 const accountManagement = {
-	addAccount: data => new Promise(async (resolve, reject) => {
+	createAccount: data => new Promise(async (resolve, reject) => {
 		const hashed = await bcrypt.hash(data.password, saltRounds);
 		let uuidUsed = false;
 		let newUUID;
@@ -32,7 +32,7 @@ const accountManagement = {
 			postHashed.uuid = newUUID;
 		}
 
-		db.addAccount(postHashed).then(done => {
+		db.createAccount(postHashed).then(done => {
 			const createdAccount = {
 				account: done.username,
 				message: 'Account created'

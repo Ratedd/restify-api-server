@@ -188,7 +188,7 @@ const databaseManager = {
 
 		return faqDetail.save();
 	},
-	addAccount: data => {
+	createAccount: data => {
 		const accountDetail = new AccountModel(data);
 
 		return accountDetail.save();
