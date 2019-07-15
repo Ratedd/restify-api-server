@@ -29,6 +29,10 @@ const databaseManager = {
 				required: true,
 				hashKey: true
 			},
+			name: {
+				type: String,
+				required: true
+			},
 			username: {
 				type: String,
 				required: true,
@@ -153,6 +157,10 @@ const databaseManager = {
 			attendees: {
 				type: [Array],
 				required: true
+			},
+			workshopName: {
+				type: String,
+				required: true
 			}
 		});
 
@@ -164,6 +172,10 @@ const databaseManager = {
 			},
 			attendees: {
 				type: [Array],
+				required: true
+			},
+			eventName: {
+				type: String,
 				required: true
 			}
 		});
@@ -193,7 +205,6 @@ const databaseManager = {
 
 		return accountDetail.save();
 	},
-	getTotalIndex: () => AccountModel.scan().exec(),
 	getAccountByUUID: inputUUID => AccountModel.get(inputUUID),
 	getAccountByUsername: inputUsername => AccountModel.query('username').eq(inputUsername).exec(),
 	getFaqByModuleCode: inputModuleCode => FaqModel.scan({ moduleCode: inputModuleCode }).exec(),
@@ -250,6 +261,8 @@ const databaseManager = {
 	},
 	getWorkshops: () => WorkshopModel.scan().exec(),
 	getWorkshopByUUID: uuid => WorkshopModel.get(uuid),
+	deleteWorkshopByID: uuid => WorkshopModel.delete(uuid),
+	deleteWorkshopAttendance: uuid => WorkshopAttendanceModel.delete(uuid),
 	addWorkshopAttendance: data => {
 		const details = new WorkshopAttendanceModel(data);
 		return details.save();

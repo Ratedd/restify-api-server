@@ -26,17 +26,17 @@ server.pre(restify.plugins.pre.sanitizePath());
 server.logger = require('./util/logger.js');
 
 server.post('/api/createaccount', (req, res, next) => {
-	let data;
-	try {
-		data = JSON.parse(req.body);
-	} catch (err) {
-		data = req.body;
-	}
-	const { username, password, name } = data;
+	const { username, password, name } = req.body;
 
 	if (!username || !password || !name) {
 		return next(errors.fieldError());
 	}
+
+	const data = {
+		username,
+		password,
+		name
+	};
 
 	accountManagement.getAccountByUsername(username).then(account => {
 		if (account.count > 0) {
@@ -61,13 +61,7 @@ server.post('/api/createaccount', (req, res, next) => {
 });
 
 server.post('/api/verifyaccount', (req, res, next) => {
-	let data;
-	try {
-		data = JSON.parse(req.body);
-	} catch (err) {
-		data = req.body;
-	}
-	const { username, password } = data;
+	const { username, password } = req.body;
 	if (!username || !password) {
 		return next(errors.fieldError());
 	}
@@ -100,13 +94,7 @@ server.post('/api/verifyaccount', (req, res, next) => {
 });
 
 server.post('/api/addfaq', (req, res, next) => {
-	let data;
-	try {
-		data = JSON.parse(req.body);
-	} catch (err) {
-		data = req.body;
-	}
-	const { moduleCode, questions, answers, keywords } = data;
+	const { moduleCode, questions, answers, keywords } = req.body;
 	if (!moduleCode || !questions || !keywords || !answers) {
 		return next(errors.fieldError());
 	}
@@ -117,13 +105,13 @@ server.post('/api/addfaq', (req, res, next) => {
 	const trimmedQuestions = _.map(splittedQuestions, _.trim);
 	const trimmedAnswers = _.map(splittedAnswers, _.trim);
 	const trimmedKeywords = _.map(splittedKeywords, _.trim);
-	const newData = {
+	const data = {
 		moduleCode: moduleCode, // eslint-disable-line object-shorthand
 		questions: trimmedQuestions,
 		answers: trimmedAnswers,
 		keywords: trimmedKeywords
 	};
-	faqManagement.addFaq(newData).then(added => {
+	faqManagement.addFaq(data).then(added => {
 		server.logger.info('[server - /api/addfaq]\n', added);
 		res.send(200, added);
 	}).catch(err => {
@@ -133,13 +121,7 @@ server.post('/api/addfaq', (req, res, next) => {
 });
 
 server.get('/api/getfaq', (req, res, next) => {
-	let data;
-	try {
-		data = JSON.parse(req.body);
-	} catch (err) {
-		data = req.body;
-	}
-	const { moduleCode } = data;
+	const { moduleCode } = req.body;
 	if (!moduleCode) {
 		return next(errors.fieldError());
 	}
@@ -159,16 +141,10 @@ server.get('/api/getfaq', (req, res, next) => {
 });
 
 server.post('/api/addsubscriber', (req, res, next) => {
-	let data;
-	try {
-		data = JSON.parse(req.body);
-	} catch (err) {
-		data = req.body;
-	}
-	if (!data) {
+	if (!req.body) {
 		return next(errors.fieldError());
 	}
-	subscriberManagement.addSubscriber(data).then(subscriber => {
+	subscriberManagement.addSubscriber(req.body).then(subscriber => {
 		if (!subscriber) {
 			res.send(200, { message: 'User already subscribed', subscribed: true });
 			return next();
@@ -183,13 +159,7 @@ server.post('/api/addsubscriber', (req, res, next) => {
 });
 
 server.del('/api/removesubscriber', (req, res, next) => {
-	let data;
-	try {
-		data = JSON.parse(req.body);
-	} catch (err) {
-		data = req.body;
-	}
-	const { id } = data;
+	const { id } = req.body;
 	if (!id) {
 		return next(errors.fieldError());
 	}
@@ -241,17 +211,10 @@ server.get('/api/getsubscriberbyid', (req, res, next) => {
 });
 
 server.post('/api/searchfaqbykeyword', (req, res, next) => {
-	let data;
-	try {
-		data = JSON.parse(req.body);
-	} catch (err) {
-		data = req.body;
-	}
-	const { keyword } = data;
+	const { keyword } = req.body;
 	if (!keyword) {
 		return next(errors.fieldError());
 	}
-	console.log(keyword);
 	faqManagement.searchFaqByKeyword(keyword).then(data => {
 		if (data.length < 1) {
 			res.send(200, { message: `No faq(s) found with the keyword: ${keyword}` });
@@ -266,13 +229,7 @@ server.post('/api/searchfaqbykeyword', (req, res, next) => {
 });
 
 server.put('/api/updatekeywords', (req, res, next) => {
-	let data;
-	try {
-		data = JSON.parse(req.body);
-	} catch (err) {
-		data = req.body;
-	}
-	const { moduleCode, keywords } = data;
+	const { moduleCode, keywords } = req.body;
 	if (!moduleCode || !keywords) {
 		return next(errors.fieldError());
 	}
@@ -308,17 +265,11 @@ server.get('/api/events', (req, res, next) => {
 });
 
 server.post('/api/addevent', (req, res, next) => {
-	let data;
-	try {
-		data = JSON.parse(req.body);
-	} catch (err) {
-		data = req.body;
-	}
-	const { eventName, description, eventDate } = data;
+	const { eventName, description, eventDate } = req.body;
 	if (!eventName || !description || !eventDate) {
 		return next(errors.fieldError());
 	}
-	eventManagement.addEvent(data).then(event => {
+	eventManagement.addEvent(req.body).then(event => {
 		server.logger.info('[server - /api/addevent]\n', event);
 		res.send(200, event);
 		return next();
@@ -368,17 +319,11 @@ server.get('/api/workshop/:id', (req, res, next) => {
 });
 
 server.post('/api/addworkshop', (req, res, next) => {
-	let data;
-	try {
-		data = JSON.parse(req.body);
-	} catch (err) {
-		data = req.body;
-	}
-	const { workshopName, description, workshopDate } = data;
+	const { workshopName, description, workshopDate } = req.body;
 	if (!workshopName || !description || !workshopDate) {
 		return next(errors.fieldError());
 	}
-	workshopManagement.addWorkshop(data).then(workshop => {
+	workshopManagement.addWorkshop(req.body).then(workshop => {
 		server.logger.info('[server - /api/addworkshop]\n', workshop);
 		res.send(200, workshop);
 		return next();
@@ -389,17 +334,11 @@ server.post('/api/addworkshop', (req, res, next) => {
 });
 
 server.post('/api/addworkshopattendance', (req, res, next) => {
-	let data;
-	try {
-		data = JSON.parse(req.body);
-	} catch (err) {
-		data = req.body;
-	}
-	const { uuid, details } = data;
+	const { uuid, details } = req.body;
 	if (!uuid || !details) {
 		return next(errors.fieldError());
 	}
-	attendanceManagement.addWorkshopAttendance(data).then(done => {
+	attendanceManagement.addWorkshopAttendance(req.body).then(done => {
 		server.logger.info('[server - /api/addworkshopattendance]\n', done);
 		res.send(200, { message: 'Successfully Added' });
 		return next();
@@ -413,14 +352,8 @@ server.post('/api/addworkshopattendance', (req, res, next) => {
 	});
 });
 
-server.post('/api/getworkshopattendance', (req, res, next) => {
-	let data;
-	try {
-		data = JSON.parse(req.body);
-	} catch (err) {
-		data = req.body;
-	}
-	const { uuid } = data;
+server.get('/api/getworkshopattendance/:uuid', (req, res, next) => {
+	const { uuid } = req.params;
 	if (!uuid) {
 		return next(errors.fieldError());
 	}
@@ -435,17 +368,11 @@ server.post('/api/getworkshopattendance', (req, res, next) => {
 });
 
 server.post('/api/addeventattendance', (req, res, next) => {
-	let data;
-	try {
-		data = JSON.parse(req.body);
-	} catch (err) {
-		data = req.body;
-	}
-	const { uuid, details } = data;
+	const { uuid, details } = req.body;
 	if (!uuid || !details) {
 		return next(errors.fieldError());
 	}
-	attendanceManagement.addEventAttendance(data).then(done => {
+	attendanceManagement.addEventAttendance(req.body).then(done => {
 		server.logger.info('[server - /api/addeventattendance]\n', done);
 		res.send(200, { message: 'Successfully Added' });
 		return next();
@@ -459,14 +386,8 @@ server.post('/api/addeventattendance', (req, res, next) => {
 	});
 });
 
-server.post('/api/geteventattendance', (req, res, next) => {
-	let data;
-	try {
-		data = JSON.parse(req.body);
-	} catch (err) {
-		data = req.body;
-	}
-	const { uuid } = data;
+server.get('/api/geteventattendance/:uuid', (req, res, next) => {
+	const { uuid } = req.params;
 	if (!uuid) {
 		return next(errors.fieldError());
 	}
@@ -508,6 +429,34 @@ server.get('/api/events/:userId', (req, res, next) => {
 		server.logger.error('[server - /api/events/:userId]\n', err);
 		return next(errors.internalServerError());
 	});
+});
+
+server.get('/api/test/:uuid/:uuid2', (req, res, next) => {
+	const { uuid, uuid2 } = req.params;
+	let workshopFound;
+	workshopManagement.getWorkshopAddedByUserID(uuid).then(data => {
+		data.forEach(workshop => {
+			if (workshop.addedByAdmin === uuid && workshop.uuid === uuid2) {
+				workshopFound = workshop;
+			}
+		});
+		workshopManagement.deleteWorkshopByID(workshopFound.uuid).then(data => {
+			console.log(data);
+		}).catch(err => {
+			console.log(err);
+		});
+		return next();
+	}).catch(err => {
+		return next(errors.internalServerError());
+	});
+});
+
+server.del('/api/workshop/:uuid', (req, res, next) => {
+
+});
+
+server.del('/api/event/:uuid', (req, res, next) => {
+
 });
 
 server.listen(3000, () => {

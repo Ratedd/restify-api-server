@@ -12,6 +12,7 @@ const accountManagement = {
 		let newUUID;
 		const postHashed = {
 			uuid: uuid(),
+			name: data.name,
 			username: data.username,
 			password: hashed,
 			isAdmin: false

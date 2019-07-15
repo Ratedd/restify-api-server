@@ -68,6 +68,17 @@ const workshopManagement = {
 			logger.error('[workshopManagement - getWorkshopAddedByUserID(userId)]\n', err);
 			reject(err);
 		});
+	}),
+	deleteWorkshopByID: uuid => new Promise((resolve, reject) => {
+		db.deleteWorkshopByID(uuid).then(done => {
+			db.deleteWorkshopAttendance(uuid).then(data => {
+
+			}).catch(err => {
+
+			});
+		}).catch(err => {
+
+		});
 	})
 };
 

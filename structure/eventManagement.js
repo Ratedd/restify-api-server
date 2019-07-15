@@ -9,7 +9,7 @@ const eventManagement = {
 		let newUUID;
 		const preData = {
 			uuid: uuid(),
-			eventName: eventData.workshopName,
+			eventName: eventData.eventName,
 			description: eventData.description,
 			eventThumbnail: eventData.eventThumbnail,
 			eventDate: eventData.eventDate,

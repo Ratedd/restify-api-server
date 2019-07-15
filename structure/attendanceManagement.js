@@ -6,11 +6,10 @@ const attendanceManagement = {
 	addWorkshopAttendance: data => new Promise((resolve, reject) => {
 		db.getWorkshopAttendance(data.uuid).then(workshopAttendance => {
 			if (!workshopAttendance) {
-				const newArr = [];
-				newArr.push(data.details);
 				const details = {
 					uuid: data.uuid,
-					attendees: newArr
+					attendees: data.details,
+					workshopName: data.workshopName
 				};
 				db.addWorkshopAttendance(details).then(done => {
 					logger.info('[attendanceManagement - addWorkshopAttendance(data)]\n', done);
@@ -22,7 +21,9 @@ const attendanceManagement = {
 				return;
 			}
 			const newArr = workshopAttendance.attendees;
-			newArr.push(data.details);
+			data.details.forEach(detail => {
+				newArr.push(detail);
+			});
 			db.updateWorkshopAttendance(data.uuid, newArr).then(done => {
 				logger.info('[attendanceManagement - addWorkshopAttendance(data)]\n', done);
 				resolve(done);
@@ -47,11 +48,10 @@ const attendanceManagement = {
 	addEventAttendance: data => new Promise((resolve, reject) => {
 		db.getEventAttendance(data.uuid).then(eventAttendance => {
 			if (!eventAttendance) {
-				const newArr = [];
-				newArr.push(data.details);
 				const details = {
 					uuid: data.uuid,
-					attendees: newArr
+					attendees: data.details,
+					eventName: data.eventName
 				};
 				db.addEventAttendance(details).then(done => {
 					logger.info('[attendanceManagement - addEventAttendance(data)]\n', done);
@@ -63,6 +63,9 @@ const attendanceManagement = {
 				return;
 			}
 			const newArr = eventAttendance.attendees;
+			data.details.forEach(detail => {
+				newArr.push(detail);
+			});
 			newArr.push(data.details);
 			db.updateEventAttendance(data.uuid, newArr).then(done => {
 				logger.info('[attendanceManagement - addEventAttendance(data)]\n', done);
