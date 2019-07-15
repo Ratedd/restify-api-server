@@ -62,29 +62,16 @@ const faqManagement = {
 		});
 	}),
 	searchFaqByKeyword: keyword => new Promise((resolve, reject) => {
-		db.populateFaqs().then(data => {
-			if (data.length < 1) {
-				resolve();
-				return;
-			}
-			const contains = [];
+		db.test(_.toString(keyword)).then(async data => {
+			const faqs = [];
 			for (let i = 0; i < data.length; i++) {
-				if (!data[i].keywords.keywords.includes(_.toString(keyword))) continue;
-				contains.push(data[i]);
+				const faq = await db.populateFaq(data[i].id);
+				faqs.push(faq);
 			}
-			logger.info('[faqManagement - searchFaqByKeyword]\n', contains);
-			resolve(contains);
+			logger.info('[faqManagement - searchFaqByKeyword]\n', faqs);
+			resolve(faqs);
 		}).catch(err => {
 			logger.error('[faqManagement - searchFaqByKeyword]\n', err);
-			reject(err);
-		});
-	}),
-	test: keyword => new Promise((resolve, reject) => {
-		db.test(_.toString(keyword)).then(data => {
-			logger.info('data', data);
-			resolve(data);
-		}).catch(err => {
-			logger.error('err', err);
 			reject(err);
 		});
 	})

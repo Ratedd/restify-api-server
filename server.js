@@ -240,34 +240,22 @@ server.get('/api/getsubscriberbyid', (req, res, next) => {
 	});
 });
 
-
 server.post('/api/searchfaqbykeyword', (req, res, next) => {
 	const { keyword } = req.body;
 	if (!keyword) {
 		return next(errors.fieldError());
 	}
-	faqManagement.test(keyword).then(data => {
+	faqManagement.searchFaqByKeyword(keyword).then(data => {
+		if (data.length < 1) {
+			res.send(200, { message: `No faq(s) found with the keyword: ${keyword}` });
+			return next();
+		}
 		res.send(200, data);
 		return next();
 	}).catch(err => {
-		server.logger.error('err', err);
+		server.logger.error('[server - /api/searchfaqbykeywords]\n', err);
 		return next(errors.internalServerError());
 	});
-	// faqManagement.searchFaqByKeyword(keyword).then(data => {
-	// 	if (!data) {
-	// 		res.send(200, { message: 'No data found' });
-	// 		return next();
-	// 	}
-	// 	if (data.length < 1) {
-	// 		res.send(200, { message: `No faq found with the keyword: ${keyword}` });
-	// 		return next();
-	// 	}
-	// 	res.send(200, data);
-	// 	return next();
-	// }).catch(err => {
-	// 	server.logger.error('[server - /api/searchfaqbykeywords]\n', err);
-	// 	return next(errors.internalServerError());
-	// });
 });
 
 server.put('/api/updatekeywords', (req, res, next) => {

@@ -74,8 +74,7 @@ const databaseManager = {
 				required: true
 			},
 			keywords: {
-				type: Array,
-				index: { global: true }
+				type: Array
 			}
 		});
 
