@@ -241,10 +241,17 @@ server.get('/api/getsubscriberbyid', (req, res, next) => {
 });
 
 server.post('/api/searchfaqbykeyword', (req, res, next) => {
-	const { keyword } = req.body;
+	let data;
+	try {
+		data = JSON.parse(req.body);
+	} catch (err) {
+		data = req.body;
+	}
+	const { keyword } = data;
 	if (!keyword) {
 		return next(errors.fieldError());
 	}
+	console.log(keyword);
 	faqManagement.searchFaqByKeyword(keyword).then(data => {
 		if (data.length < 1) {
 			res.send(200, { message: `No faq(s) found with the keyword: ${keyword}` });
