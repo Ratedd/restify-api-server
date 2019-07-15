@@ -62,7 +62,7 @@ const faqManagement = {
 		});
 	}),
 	searchFaqByKeyword: keyword => new Promise((resolve, reject) => {
-		db.test(_.toString(keyword)).then(async data => {
+		db.getKeywordsWithKeyword(_.toString(keyword)).then(async data => {
 			const faqs = [];
 			for (let i = 0; i < data.length; i++) {
 				const faq = await db.populateFaq(data[i].id);
