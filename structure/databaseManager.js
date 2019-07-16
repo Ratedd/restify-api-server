@@ -259,6 +259,8 @@ const databaseManager = {
 
 		return workshopDetails.save();
 	},
+	deleteEventByID: uuid => EventModel.delete(uuid),
+	deleteEventAttendance: uuid => EventAttendanceModel.delete(uuid),
 	getWorkshops: () => WorkshopModel.scan().exec(),
 	getWorkshopByUUID: uuid => WorkshopModel.get(uuid),
 	deleteWorkshopByID: uuid => WorkshopModel.delete(uuid),

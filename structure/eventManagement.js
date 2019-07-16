@@ -68,6 +68,21 @@ const eventManagement = {
 			logger.error('[eventManagement - getEventAddedByUserID]\n', err);
 			reject(err);
 		});
+	}),
+	deleteEventByID: uuid => new Promise((resolve, reject) => {
+		db.deleteEventByID(uuid).then(done => {
+			logger.info('[workshopManagement - deleteEventByID(uuid)]\n', done);
+			db.deleteEventAttendance(uuid).then(data => {
+				logger.info('[workshopManagement - deleteEventAttendance(uuid)]\n', data);
+				resolve(data);
+			}).catch(err => {
+				logger.error('[workshopManagement - deleteEventAttendance(uuid)]\n', err);
+				reject(err);
+			});
+		}).catch(err => {
+			logger.error('[workshopManagement - deleteEventByID(uuid)]\n', err);
+			reject(err);
+		});
 	})
 };
 

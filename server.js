@@ -431,32 +431,56 @@ server.get('/api/events/:userId', (req, res, next) => {
 	});
 });
 
-server.get('/api/test/:uuid/:uuid2', (req, res, next) => {
-	const { uuid, uuid2 } = req.params;
+server.del('/api/workshop/:userId/:workshopId', (req, res, next) => {
+	const { userId, workshopId } = req.params;
+	if (!userId || !workshopId) {
+		return next(errors.fieldError());
+	}
 	let workshopFound;
-	workshopManagement.getWorkshopAddedByUserID(uuid).then(data => {
+	workshopManagement.getWorkshopAddedByUserID(userId).then(data => {
 		data.forEach(workshop => {
-			if (workshop.addedByAdmin === uuid && workshop.uuid === uuid2) {
+			if (workshop.addedByAdmin === userId && workshop.uuid === workshopId) {
 				workshopFound = workshop;
 			}
 		});
-		workshopManagement.deleteWorkshopByID(workshopFound.uuid).then(data => {
-			console.log(data);
+		workshopManagement.deleteWorkshopByID(workshopFound.uuid).then(done => {
+			server.logger.info('[server - /api/workshop/:userId/:workshopId]\n', done);
+			res.send(200, done);
+			return next();
 		}).catch(err => {
-			console.log(err);
+			server.logger.error('[server - /api/workshop/:userId/:workshopId - 2]\n', err);
+			return next(errors.internalServerError());
 		});
-		return next();
 	}).catch(err => {
+		server.logger.error('[server - /api/workshop/:userId/:workshopId - 1]\n', err);
 		return next(errors.internalServerError());
 	});
 });
 
-server.del('/api/workshop/:uuid', (req, res, next) => {
-
-});
-
-server.del('/api/event/:uuid', (req, res, next) => {
-
+server.del('/api/event/:userId/:eventId', (req, res, next) => {
+	const { userId, eventId } = req.params;
+	if (!userId || !eventId) {
+		return next(errors.fieldError());
+	}
+	let eventFound;
+	eventManagement.getEventAddedByUserID(userId).then(data => {
+		data.forEach(event => {
+			if (event.addedByAdmin === userId && event.uuid === eventId) {
+				eventFound = event;
+			}
+		});
+		eventManagement.deleteEventByID(eventFound.uuid).then(done => {
+			server.logger.info('[server - /api/event/:userId/:eventId]\n', done);
+			res.send(200, done);
+			return next();
+		}).catch(err => {
+			server.logger.error('[server - /api/event/:userId/:eventId - 2]\n', err);
+			return next(errors.internalServerError());
+		});
+	}).catch(err => {
+		server.logger.error('[server - /api/event/:userId/:eventId - 1]\n', err);
+		return next(errors.internalServerError());
+	});
 });
 
 server.listen(3000, () => {

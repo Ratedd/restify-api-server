@@ -71,13 +71,17 @@ const workshopManagement = {
 	}),
 	deleteWorkshopByID: uuid => new Promise((resolve, reject) => {
 		db.deleteWorkshopByID(uuid).then(done => {
+			logger.info('[workshopManagement - deleteWorkshopById]\n', done);
 			db.deleteWorkshopAttendance(uuid).then(data => {
-
+				logger.info('[workshopManagement - deleteWorkshopAttendance(uuid)]\n', data);
+				resolve(data);
 			}).catch(err => {
-
+				logger.error('[workshopManagement - deleteWorkshopAttendance(uuid)]\n', err);
+				reject(err);
 			});
 		}).catch(err => {
-
+			logger.error('[workshopManagement - deleteWorkshopById(uuid)]\n', err);
+			reject(err);
 		});
 	})
 };
