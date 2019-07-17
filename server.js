@@ -334,8 +334,8 @@ server.post('/api/addworkshop', (req, res, next) => {
 });
 
 server.post('/api/addworkshopattendance', (req, res, next) => {
-	const { uuid, details } = req.body;
-	if (!uuid || !details) {
+	const { uuid, details, workshopName } = req.body;
+	if (!uuid || !details || !workshopName) {
 		return next(errors.fieldError());
 	}
 	attendanceManagement.addWorkshopAttendance(req.body).then(done => {
