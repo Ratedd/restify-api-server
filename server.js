@@ -368,8 +368,8 @@ server.get('/api/getworkshopattendance/:uuid', (req, res, next) => {
 });
 
 server.post('/api/addeventattendance', (req, res, next) => {
-	const { uuid, details } = req.body;
-	if (!uuid || !details) {
+	const { uuid, details, eventName } = req.body;
+	if (!uuid || !details || !eventName) {
 		return next(errors.fieldError());
 	}
 	attendanceManagement.addEventAttendance(req.body).then(done => {
