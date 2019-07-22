@@ -158,8 +158,8 @@ server.post('/api/addsubscriber', (req, res, next) => {
 	});
 });
 
-server.del('/api/removesubscriber', (req, res, next) => {
-	const { id } = req.body;
+server.del('/api/removesubscriber/:id', (req, res, next) => {
+	const { id } = req.params;
 	if (!id) {
 		return next(errors.fieldError());
 	}
