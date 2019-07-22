@@ -120,7 +120,7 @@ server.post('/api/addfaq', (req, res, next) => {
 	});
 });
 
-server.get('/api/getfaq', (req, res, next) => {
+server.post('/api/getfaq', (req, res, next) => {
 	const { moduleCode } = req.body;
 	if (!moduleCode) {
 		return next(errors.fieldError());
